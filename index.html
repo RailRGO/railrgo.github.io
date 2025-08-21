@@ -19,6 +19,7 @@
     .muted{color:var(--muted);font-size:14px}
     .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:10px}
     .error{background:#fef2f2;color:#991b1b;padding:12px;border-radius:10px}
+    small.badge{background:#eef2ff;color:#3730a3;padding:2px 8px;border-radius:999px}
   </style>
 </head>
 <body>
@@ -33,7 +34,10 @@
 
 <section class="card">
   <h1>Уроки по математике и физике</h1>
-  <p class="muted">Длительность занятия — 50 минут. Рабочие часы: пн–сб, 18:00–22:00. Время в формах показано с учетом вашего часового пояса.</p>
+  <p class="muted">
+    Длительность занятия — 50 минут. Рабочие часы: пн–сб, 18:00–22:00 по Москве (Europe/Moscow).
+    Слоты ниже отображаются в вашем часовом поясе.
+  </p>
   <p><a class="btn" href="#schedule">Записаться</a></p>
 </section>
 
@@ -61,21 +65,21 @@
           </select>
         </div>
         <div>
-          <label for="date">Дата (в вашем часовом поясе)</label>
+          <label for="date">Дата (ваш часовой пояс: <span id="tzLabel"></span>)</label>
           <input id="date" name="date" type="date" required>
+          <div class="muted">Учитываются рабочие дни преподавателя по Москве: пн–сб.</div>
         </div>
       </div>
 
-      <div class="two grid">
-        <div>
-          <label for="time">Время (ваш часовой пояс: <span id="tzLabel"></span>)</label>
-          <select id="time" name="time" required></select>
-          <div class="muted">Слот 50 мин + 10 мин перерыв. Доступно каждый час: 18:00, 19:00, 20:00, 21:00.</div>
-        </div>
-        <div>
-          <label for="message">Комментарий (необязательно)</label>
-          <input id="message" name="message" placeholder="Пожелания по теме, уровень и т.д.">
-        </div>
+      <div>
+        <label for="time">Время слота</label>
+        <select id="time" name="time" required></select>
+        <div class="muted">Отображение: локальное время — эквивалент <b>18:00–22:00 МСК</b> выбранного дня.</div>
+      </div>
+
+      <div>
+        <label for="message">Комментарий (необязательно)</label>
+        <input id="message" name="message" placeholder="Пожелания по теме, уровень и т.д.">
       </div>
 
       <div id="status"></div>
@@ -97,7 +101,7 @@
   <h2>Контакты</h2>
   <div class="card">
     <p><a class="btn" style="background:#0088cc" href="https://t.me/aviation09" target="_blank" rel="noopener">Связаться в Telegram (@aviation09)</a></p>
-    <p class="muted">Если удобнее по email — укажите его в форме записи, приглашение придёт автоматически.</p>
+    <p class="muted">Приглашение придёт на указанный email автоматически.</p>
   </div>
 </section>
 
@@ -109,29 +113,32 @@
   // URL вашего Apps Script Web App:
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbwtEwIK2iat73soses37hWC-HKNuDlBdHs_4YDLNTUVMU675Oilm_cr-bFqixa-0BhYQw/exec';
 
-  // Фронтенд-настройки расписания (в часовом поясе пользователя; сервер дополнительно проверяет по времени преподавателя)
+  // Настройки расписания (времена — в часовом поясе преподавателя)
+  const TUTOR_TZ = 'Europe/Moscow';
+  const WORK_DAYS = [1,2,3,4,5,6]; // 1=пн ... 7=вс
+  const START_HOUR = 18;            // 18:00 МСК
+  const END_HOUR = 22;              // до 22:00 (последний старт 21:00)
   const SLOT_DURATION_MIN = 50;
-  const WORK_START = 18;   // 18:00
-  const WORK_END = 22;     // до 22:00 (последний старт 21:00)
-  const WORK_DAYS = [1,2,3,4,5,6]; // пн–сб
 
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
-  document.getElementById('tzLabel').textContent = tz;
+  const tzUser = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
+  document.getElementById('tzLabel').textContent = tzUser;
 
   const dateEl = document.getElementById('date');
   const timeEl = document.getElementById('time');
   const statusEl = document.getElementById('status');
 
-  // Поставим минимальную дату — сегодня, и сразу выберем ближайший рабочий день
-  const today = new Date();
-  dateEl.min = toYmd(today);
-  const initial = nextAllowedDate(today);
-  dateEl.value = toYmd(initial);
+  // Минимальная дата — сегодня
+  const todayLocal = new Date();
+  dateEl.min = toYmd(todayLocal);
+
+  // Выбираем ближайшую дату, допустимую по мск-расписанию
+  const initialLocal = nextAllowedLocalDate(todayLocal);
+  dateEl.value = toYmd(initialLocal);
 
   dateEl.addEventListener('change', () => {
-    const d = new Date(dateEl.value + 'T00:00:00');
-    if (!isAllowedDate(d)) {
-      const next = nextAllowedDate(d);
+    const d = new Date(dateEl.value + 'T12:00:00');
+    if (!isAllowedLocalDate(d)) {
+      const next = nextAllowedLocalDate(d);
       dateEl.value = toYmd(next);
     }
     populateTimes();
@@ -139,58 +146,109 @@
 
   populateTimes();
 
-  function isAllowedDate(d) {
-    // getDay(): 0=вс,...,6=сб → нужно 1..6
-    const dow = d.getDay() === 0 ? 7 : d.getDay(); // 1..7
-    return WORK_DAYS.includes(dow);
+  function showStatus(html, type) {
+    statusEl.className = type === 'error' ? 'error' : (type === 'success' ? 'success' : '');
+    statusEl.innerHTML = html;
   }
-  function nextAllowedDate(d) {
-    const x = new Date(d);
-    while (!isAllowedDate(x) || toYmd(x) < toYmd(today)) {
-      x.setDate(x.getDate() + 1);
+
+  // Проверяем, является ли локальная дата допустимой с точки зрения дня недели преподавателя (по МСК)
+  function isAllowedLocalDate(localNoonDate) {
+    const wk = weekdayNumInTZ(localNoonDate, TUTOR_TZ); // 1..7
+    return WORK_DAYS.includes(wk);
+  }
+
+  function nextAllowedLocalDate(fromLocalDate) {
+    const d = new Date(fromLocalDate);
+    d.setHours(12,0,0,0); // полдень
+    while (!isAllowedLocalDate(d) || toYmd(d) < toYmd(todayLocal)) {
+      d.setDate(d.getDate() + 1);
     }
-    return x;
+    return d;
   }
+
   function toYmd(d) {
-    return d.toISOString().split('T')[0];
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${dd}`;
+  }
+
+  function weekdayNumInTZ(dateLocal, tz) {
+    const w = new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'short' }).format(dateLocal);
+    const map = {Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6, Sun:7};
+    return map[w];
+  }
+
+  // Получить YYYY,MM,DD дня в МСК, соответствующего локальной дате (берём полдень, чтобы не перепрыгивать дни)
+  function mskYmdFromLocalYmd(localYmd) {
+    const localNoon = new Date(localYmd + 'T12:00:00');
+    const y = Number(new Intl.DateTimeFormat('en-CA', { timeZone: TUTOR_TZ, year:'numeric' }).format(localNoon));
+    const m = Number(new Intl.DateTimeFormat('en-CA', { timeZone: TUTOR_TZ, month:'2-digit' }).format(localNoon));
+    const d = Number(new Intl.DateTimeFormat('en-CA', { timeZone: TUTOR_TZ, day:'2-digit' }).format(localNoon));
+    return { y, m, d };
+  }
+
+  // Построить Date, представляющую момент "y-m-d h:mm" в часовом поясе tz (без библиотек)
+  function makeZonedDate(y, m, d, hh, mm, tz) {
+    const dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz, hour12: false,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+    let utc = Date.UTC(y, m-1, d, hh, mm, 0);
+    // Итеративно корректируем до совпадения локальных компонент
+    for (let i = 0; i < 3; i++) {
+      const parts = Object.fromEntries(dtf.formatToParts(new Date(utc)).map(p => [p.type, p.value]));
+      const ay = Number(parts.year), am = Number(parts.month), ad = Number(parts.day);
+      const ah = Number(parts.hour), ami = Number(parts.minute), as = Number(parts.second);
+      const desired = Date.UTC(y, m-1, d, hh, mm, 0);
+      const actual  = Date.UTC(ay, am-1, ad, ah, ami, as);
+      const diff = desired - actual;
+      if (diff === 0) break;
+      utc += diff;
+    }
+    return new Date(utc);
   }
 
   function populateTimes() {
     timeEl.innerHTML = '';
-    const selectedDate = new Date(dateEl.value + 'T00:00:00');
-    if (!isAllowedDate(selectedDate)) {
-      showStatus('В этот день запись не ведётся (пн–сб). Выбрали ближайшую доступную дату.', 'error');
-      const next = nextAllowedDate(selectedDate);
+    const localYmd = dateEl.value;
+    if (!localYmd) return;
+
+    // День в МСК для выбранной локальной даты
+    const { y, m, d } = mskYmdFromLocalYmd(localYmd);
+
+    // Проверим рабочий день в МСК
+    const mskNoon = makeZonedDate(y, m, d, 12, 0, TUTOR_TZ);
+    if (!WORK_DAYS.includes(weekdayNumInTZ(mskNoon, TUTOR_TZ))) {
+      showStatus('В этот день (по МСК) запись не ведётся. Выбран ближайший доступный.', 'error');
+      const next = nextAllowedLocalDate(new Date(localYmd + 'T12:00:00'));
       dateEl.value = toYmd(next);
+      return populateTimes();
     }
 
     const now = new Date();
-    const isToday = toYmd(selectedDate) === toYmd(now);
     let count = 0;
+    for (let h = START_HOUR; h < END_HOUR; h++) {
+      // Слот: h:00 по МСК → в локальное время пользователя
+      const slotStart = makeZonedDate(y, m, d, h, 0, TUTOR_TZ); // абсолютное время
+      if (slotStart.getTime() < now.getTime() + 2*60000) continue; // прошедшие слоты не показываем
 
-    for (let h = WORK_START; h < WORK_END; h++) {
-      // пропускаем прошедшее для сегодняшнего дня
-      if (isToday) {
-        if (h < now.getHours()) continue;
-        if (h === now.getHours() && now.getMinutes() > 5) continue;
-      }
+      const localLabel = slotStart.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+      const mskLabel = String(h).padStart(2,'0') + ':00 МСК';
+
       const opt = document.createElement('option');
-      opt.value = String(h).padStart(2,'0') + ':00';
-      opt.textContent = opt.value;
+      opt.value = slotStart.toISOString(); // будем отправлять ISO, без пересчётов
+      opt.textContent = `${localLabel} (=${mskLabel})`;
       timeEl.appendChild(opt);
       count++;
     }
 
     if (!count) {
-      showStatus('На выбранную дату свободных слотов не осталось. Выберите другой день.', 'error');
+      showStatus('На выбранную дату (по МСК) свободных слотов не осталось. Выберите другой день.', 'error');
     } else {
       showStatus('', '');
     }
-  }
-
-  function showStatus(html, type) {
-    statusEl.className = type === 'error' ? 'error' : (type === 'success' ? 'success' : '');
-    statusEl.innerHTML = html;
   }
 
   document.getElementById('bookingForm').addEventListener('submit', async (e) => {
@@ -201,25 +259,19 @@
     const email = document.getElementById('email').value.trim();
     const subject = document.getElementById('subject').value.trim();
     const message = document.getElementById('message').value.trim();
-    const date = document.getElementById('date').value; // YYYY-MM-DD
-    const time = document.getElementById('time').value; // HH:mm
+    const startIso = document.getElementById('time').value; // уже ISO UTC из опции
 
-    if (!date || !time) {
-      showStatus('Выберите дату и время', 'error');
+    if (!startIso) {
+      showStatus('Выберите время слота', 'error');
       return;
     }
 
-    // Локальное время пользователя -> ISO UTC
-    const local = new Date(`${date}T${time}:00`);
-    const startIso = local.toISOString();
-
-    const payload = { name, email, subject, message, startIso, timezone: tz };
+    const payload = { name, email, subject, message, startIso, timezone: tzUser };
 
     try {
-      // text/plain — чтобы не было preflight CORS у Apps Script
       const res = await fetch(GAS_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // без preflight
         body: JSON.stringify(payload)
       });
 
@@ -229,23 +281,21 @@
         if (data.reason === 'busy') {
           showStatus('Это время уже занято. Пожалуйста, выберите другое.', 'error');
         } else if (data.reason === 'closed') {
-          showStatus('Запись доступна пн–сб с 18:00 до 22:00 (по времени преподавателя). Выберите другое время.', 'error');
+          showStatus('Запись доступна пн–сб с 18:00 до 22:00 по Москве. Выберите другое время.', 'error');
         } else if (data.reason === 'past') {
           showStatus('Нельзя записаться на прошедшее время. Выберите другой слот.', 'error');
         } else {
           showStatus('Ошибка: ' + (data.error || 'неизвестно'), 'error');
         }
         return;
-        }
+      }
 
       const start = new Date(data.startIso);
       const end = new Date(data.endIso);
-      const gcalLink = makeGoogleCalLink(subject, name, start, end, message);
 
       showStatus(
         `Готово! Вы записаны на <b>${start.toLocaleString()}</b> (50 минут).<br>
-         Приглашение отправлено на <b>${email}</b> (проверьте папку «Входящие/Спам»).<br>
-         Добавить себе в календарь: <a href="${gcalLink}" target="_blank" rel="noopener">ссылка</a>.`,
+         Приглашение отправлено на <b>${email}</b> (проверьте «Входящие/Спам»).`,
         'success'
       );
       e.target.reset();
@@ -255,24 +305,6 @@
       console.error(err);
     }
   });
-
-  function makeGoogleCalLink(subject, name, start, end, message) {
-    const fmt = (d) => {
-      const pad = (n) => String(n).padStart(2, '0');
-      return d.getUTCFullYear()
-        + pad(d.getUTCMonth()+1)
-        + pad(d.getUTCDate())
-        + 'T'
-        + pad(d.getUTCHours())
-        + pad(d.getUTCMinutes())
-        + pad(d.getUTCSeconds())
-        + 'Z';
-    };
-    const text = encodeURIComponent(`Урок (${subject}) — ${name}`);
-    const details = encodeURIComponent(message || 'Урок 50 минут');
-    const dates = fmt(start) + '/' + fmt(end);
-    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&details=${details}&dates=${dates}`;
-  }
 </script>
 </body>
 </html>
