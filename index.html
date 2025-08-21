@@ -3,37 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Запись на уроки по математике и физике | Абубакиров Василий Владимирович</title>
-  <meta name="description" content="Онлайн-запись на индивидуальные уроки по математике и физике. Длительность 50 минут.">
+  <title>Онлайн‑уроки | Запись на уроки по математике и физике</title>
+  <meta name="description" content="Онлайн‑запись на индивидуальные уроки по математике и физике. Длительность 50 минут.">
+
+  <!-- Шрифт -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
   <style>
-    :root{--bg:#fff;--text:#1b1b1b;--muted:#6b7280;--card:#f8fafc;--accent:#2563eb}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:var(--bg)}
-    header,section,footer{max-width:900px;margin:0 auto;padding:20px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    nav a{margin-left:16px;color:var(--text);text-decoration:none;font-weight:600}
-    .btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600;border:0;cursor:pointer}
-    .card{background:var(--card);padding:20px;border-radius:14px}
-    .grid{display:grid;gap:14px} .two{grid-template-columns:1fr 1fr} @media(max-width:720px){.two{grid-template-columns:1fr}}
-    input,select,textarea{width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:10px}
-    label{font-weight:600;font-size:14px}
+    :root{
+      --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06);
+      --accent:#6366f1; --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.6)
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f8fafc; --text:#1b1b1b; --muted:#6b7280; --card:#ffffff; --border:#e5e7eb; --ring:rgba(37,99,235,0.2); --accent:#2563eb }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text); background:radial-gradient(1200px 600px at 100% -10%, rgba(99,102,241,.15), transparent 60%),
+                        radial-gradient(1000px 500px at -10% 100%, rgba(37,99,235,.15), transparent 60%),
+                        var(--bg);
+    }
+    header,section,footer{max-width:960px;margin:0 auto;padding:20px}
+    header{
+      position:sticky; top:0; z-index:10; backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(0,0,0,.25), transparent);
+      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; border-bottom:1px solid var(--border)
+    }
+    .brand{font-weight:800; letter-spacing:.2px}
+    nav a{margin-left:16px; color:var(--text); text-decoration:none; font-weight:600; opacity:.9}
+    nav a:hover{opacity:1}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      background:linear-gradient(135deg, var(--accent), #8b5cf6);
+      color:#fff; padding:12px 18px; border-radius:12px; text-decoration:none; font-weight:700;
+      border:0; cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.35); transition:transform .12s ease, box-shadow .12s ease
+    }
+    .btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(99,102,241,.45)}
+    .card{
+      background:var(--card); padding:22px; border-radius:16px; border:1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,.15)
+    }
+    .grid{display:grid; gap:16px}
+    .two{grid-template-columns:1fr 1fr}
+    @media(max-width:720px){.two{grid-template-columns:1fr}}
+    label{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
+    input,select,textarea{
+      width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; color:var(--text);
+      background:rgba(255,255,255,.04); outline:none; transition:border-color .15s, box-shadow .15s, background .15s
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring); background:rgba(255,255,255,.06)}
     .muted{color:var(--muted);font-size:14px}
-    .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:10px}
-    .error{background:#fef2f2;color:#991b1b;padding:12px;border-radius:10px}
-    small.badge{background:#eef2ff;color:#3730a3;padding:2px 8px;border-radius:999px}
+    .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px}
+    .error{background:#fef2f2;color:#991b1b;padding:12px;border-radius:12px}
+    small.badge{background:#eef2ff;color:#3730a3;padding:2px 8px;border-radius:999px;font-weight:600}
+    h1,h2{letter-spacing:.2px}
   </style>
 </head>
 <body>
 <header>
-  <div style="font-weight:800">Абубакиров Василий Владимирович</div>
+  <div class="brand">Онлайн‑уроки</div>
   <nav>
     <a href="#schedule">Запись</a>
-    <a href="#about">Обо мне</a>
+    <a href="#about">О сервисе</a>
     <a href="#contacts">Контакты</a>
   </nav>
 </header>
 
 <section class="card">
-  <h1>Уроки по математике и физике</h1>
+  <h1>Онлайн‑уроки по математике и физике</h1>
   <p class="muted">
     Длительность занятия — 50 минут. Рабочие часы: пн–сб, 18:00–22:00 по Москве (Europe/Moscow).
     Слоты ниже отображаются в вашем часовом поясе.
@@ -67,7 +108,7 @@
         <div>
           <label for="date">Дата (ваш часовой пояс: <span id="tzLabel"></span>)</label>
           <input id="date" name="date" type="date" required>
-          <div class="muted">Учитываются рабочие дни преподавателя по Москве: пн–сб.</div>
+          <div class="muted">Учитываются рабочие дни (по Москве): пн–сб.</div>
         </div>
       </div>
 
@@ -82,7 +123,7 @@
         <input id="message" name="message" placeholder="Пожелания по теме, уровень и т.д.">
       </div>
 
-      <div id="status"></div>
+      <div id="status" aria-live="polite"></div>
       <div>
         <button class="btn" type="submit">Проверить и записаться</button>
       </div>
@@ -91,33 +132,33 @@
 </section>
 
 <section id="about">
-  <h2>Обо мне</h2>
+  <h2>О сервисе</h2>
   <div class="card">
-    <p>Репетитор по математике и физике. Готовлю к экзаменам, помогаю подтянуть школьную программу и углубиться в предмет. Формат занятий — онлайн. Длительность урока — 50 минут.</p>
+    <p>Индивидуальные онлайн‑уроки по математике и физике. Подготовка к экзаменам, помощь с текущей программой и углублённые занятия. Длительность одного урока — 50 минут.</p>
   </div>
 </section>
 
 <section id="contacts">
   <h2>Контакты</h2>
   <div class="card">
-    <p><a class="btn" style="background:#0088cc" href="https://t.me/aviation09" target="_blank" rel="noopener">Связаться в Telegram (@aviation09)</a></p>
+    <p><a class="btn" style="background:#0088cc" href="https://t.me/aviation09" target="_blank" rel="noopener">Связаться в Telegram</a></p>
     <p class="muted">Приглашение придёт на указанный email автоматически.</p>
   </div>
 </section>
 
 <footer>
-  <small>© 2025 Абубакиров Василий Владимирович</small>
+  <small>© 2025 Онлайн‑уроки</small>
 </footer>
 
 <script>
-  // URL вашего Apps Script Web App:
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbyaM0I0h2HyJfW6UQ2PhVRSEkTo3qJHXnWAeMnKQbUa5y1qZZeZByk3CDs3TNvvPUQ5pw/exec';
+  // URL вашего Apps Script Web App (замените при необходимости)
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycby5WBIws3oNiBguaQhb837aMm33bHXY5pqopXtQARaIMz6r-eXChE_raaOTLx8oZUrb0w/exec';
 
-  // Настройки расписания (времена — в часовом поясе преподавателя)
-  const TUTOR_TZ = 'Europe/Moscow';
-  const WORK_DAYS = [1,2,3,4,5,6]; // 1=пн ... 7=вс
+  // Настройки расписания (часы — по московскому времени)
+  const SERVICE_TZ = 'Europe/Moscow';
+  const WORK_DAYS = [1,2,3,4,5,6]; // 1=пн ... 7=вс — работаем пн–сб
   const START_HOUR = 18;            // 18:00 МСК
-  const END_HOUR = 22;              // до 22:00 (последний старт 21:00)
+  const END_HOUR = 22;              // до 22:00 (последний старт — 21:00)
   const SLOT_DURATION_MIN = 50;
 
   const tzUser = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
@@ -131,7 +172,7 @@
   const todayLocal = new Date();
   dateEl.min = toYmd(todayLocal);
 
-  // Выбираем ближайшую дату, допустимую по мск-расписанию
+  // Выбираем ближайшую допустимую дату (по расписанию в Москве)
   const initialLocal = nextAllowedLocalDate(todayLocal);
   dateEl.value = toYmd(initialLocal);
 
@@ -151,9 +192,9 @@
     statusEl.innerHTML = html;
   }
 
-  // Проверяем, является ли локальная дата допустимой с точки зрения дня недели преподавателя (по МСК)
+  // Проверяем: является ли локальная дата допустимой по дню недели в московском времени
   function isAllowedLocalDate(localNoonDate) {
-    const wk = weekdayNumInTZ(localNoonDate, TUTOR_TZ); // 1..7
+    const wk = weekdayNumInTZ(localNoonDate, SERVICE_TZ); // 1..7
     return WORK_DAYS.includes(wk);
   }
 
@@ -179,16 +220,16 @@
     return map[w];
   }
 
-  // Получить YYYY,MM,DD дня в МСК, соответствующего локальной дате (берём полдень, чтобы не перепрыгивать дни)
+  // Получить YYYY,MM,DD дня в МСК, соответствующего локальной дате
   function mskYmdFromLocalYmd(localYmd) {
     const localNoon = new Date(localYmd + 'T12:00:00');
-    const y = Number(new Intl.DateTimeFormat('en-CA', { timeZone: TUTOR_TZ, year:'numeric' }).format(localNoon));
-    const m = Number(new Intl.DateTimeFormat('en-CA', { timeZone: TUTOR_TZ, month:'2-digit' }).format(localNoon));
-    const d = Number(new Intl.DateTimeFormat('en-CA', { timeZone: TUTOR_TZ, day:'2-digit' }).format(localNoon));
+    const y = Number(new Intl.DateTimeFormat('en-CA', { timeZone: SERVICE_TZ, year:'numeric' }).format(localNoon));
+    const m = Number(new Intl.DateTimeFormat('en-CA', { timeZone: SERVICE_TZ, month:'2-digit' }).format(localNoon));
+    const d = Number(new Intl.DateTimeFormat('en-CA', { timeZone: SERVICE_TZ, day:'2-digit' }).format(localNoon));
     return { y, m, d };
   }
 
-  // Построить Date, представляющую момент "y-m-d h:mm" в часовом поясе tz (без библиотек)
+  // Построить Date, представляющую момент y-m-d h:mm в часовом поясе tz (без библиотек)
   function makeZonedDate(y, m, d, hh, mm, tz) {
     const dtf = new Intl.DateTimeFormat('en-US', {
       timeZone: tz, hour12: false,
@@ -196,7 +237,6 @@
       hour: '2-digit', minute: '2-digit', second: '2-digit'
     });
     let utc = Date.UTC(y, m-1, d, hh, mm, 0);
-    // Итеративно корректируем до совпадения локальных компонент
     for (let i = 0; i < 3; i++) {
       const parts = Object.fromEntries(dtf.formatToParts(new Date(utc)).map(p => [p.type, p.value]));
       const ay = Number(parts.year), am = Number(parts.month), ad = Number(parts.day);
@@ -218,9 +258,9 @@
     // День в МСК для выбранной локальной даты
     const { y, m, d } = mskYmdFromLocalYmd(localYmd);
 
-    // Проверим рабочий день в МСК
-    const mskNoon = makeZonedDate(y, m, d, 12, 0, TUTOR_TZ);
-    if (!WORK_DAYS.includes(weekdayNumInTZ(mskNoon, TUTOR_TZ))) {
+    // Проверка рабочего дня в МСК
+    const mskNoon = makeZonedDate(y, m, d, 12, 0, SERVICE_TZ);
+    if (!WORK_DAYS.includes(weekdayNumInTZ(mskNoon, SERVICE_TZ))) {
       showStatus('В этот день (по МСК) запись не ведётся. Выбран ближайший доступный.', 'error');
       const next = nextAllowedLocalDate(new Date(localYmd + 'T12:00:00'));
       dateEl.value = toYmd(next);
@@ -230,15 +270,15 @@
     const now = new Date();
     let count = 0;
     for (let h = START_HOUR; h < END_HOUR; h++) {
-      // Слот: h:00 по МСК → в локальное время пользователя
-      const slotStart = makeZonedDate(y, m, d, h, 0, TUTOR_TZ); // абсолютное время
-      if (slotStart.getTime() < now.getTime() + 2*60000) continue; // прошедшие слоты не показываем
+      // Слот: h:00 по МСК → конвертируем в локальное время пользователя
+      const slotStart = makeZonedDate(y, m, d, h, 0, SERVICE_TZ); // абсолютное время
+      if (slotStart.getTime() < now.getTime() + 2*60000) continue; // прошедшие слоты скрываем
 
       const localLabel = slotStart.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
       const mskLabel = String(h).padStart(2,'0') + ':00 МСК';
 
       const opt = document.createElement('option');
-      opt.value = slotStart.toISOString(); // будем отправлять ISO, без пересчётов
+      opt.value = slotStart.toISOString(); // отправляем ISO UTC
       opt.textContent = `${localLabel} (=${mskLabel})`;
       timeEl.appendChild(opt);
       count++;
@@ -259,7 +299,7 @@
     const email = document.getElementById('email').value.trim();
     const subject = document.getElementById('subject').value.trim();
     const message = document.getElementById('message').value.trim();
-    const startIso = document.getElementById('time').value; // уже ISO UTC из опции
+    const startIso = document.getElementById('time').value;
 
     if (!startIso) {
       showStatus('Выберите время слота', 'error');
@@ -291,13 +331,15 @@
       }
 
       const start = new Date(data.startIso);
-      const end = new Date(data.endIso);
 
       showStatus(
         `Готово! Вы записаны на <b>${start.toLocaleString()}</b> (50 минут).<br>
-         Приглашение отправлено на <b>${email}</b> (проверьте «Входящие/Спам»).`,
+         Приглашение отправлено на <b>${email}</b> (проверьте «Входящие/Спам»).<br><br>
+         <small class="badge">Управление записью</small><br>
+         <a href="${data.cancelUrl}" target="_blank" rel="noopener">Отменить запись</a>`,
         'success'
       );
+
       e.target.reset();
       populateTimes();
     } catch (err) {
@@ -308,4 +350,3 @@
 </script>
 </body>
 </html>
-
