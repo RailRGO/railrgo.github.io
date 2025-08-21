@@ -1,114 +1,278 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Запись на уроки | Репетитор</title>
-  <meta name="description" content="Запишитесь на индивидуальный урок. Удобная запись онлайн, напоминания и выбор времени." />
-  <link rel="preconnect" href="https://assets.calendly.com">
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Запись на уроки по математике и физике | Абубакиров Василий Владимирович</title>
+  <meta name="description" content="Онлайн-запись на индивидуальные уроки по математике и физике. Длительность 50 минут.">
   <style>
-    :root{--bg:#ffffff;--text:#1b1b1b;--accent:#2c7be5;--muted:#6b7280;--card:#f8fafc}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Noto Sans',sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
-    header{padding:32px 20px;max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+    :root{--bg:#fff;--text:#1b1b1b;--muted:#6b7280;--card:#f8fafc;--accent:#2563eb}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:var(--bg)}
+    header,section,footer{max-width:900px;margin:0 auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
     nav a{margin-left:16px;color:var(--text);text-decoration:none;font-weight:600}
-    .btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600}
-    .hero{max-width:980px;margin:0 auto;padding:20px}
-    .hero-inner{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center}
-    h1{font-size:36px;margin:12px 0}
-    .lead{color:var(--muted)}
-    section{max-width:980px;margin:40px auto;padding:0 20px}
-    .card{background:var(--card);padding:20px;border-radius:16px}
-    .grid{display:grid;gap:16px}
-    @media (max-width:800px){.hero-inner{grid-template-columns:1fr}}
-    footer{max-width:980px;margin:40px auto 60px;padding:0 20px;color:var(--muted)}
-    input,textarea{width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:10px}
+    .btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600;border:0;cursor:pointer}
+    .card{background:var(--card);padding:20px;border-radius:14px}
+    .grid{display:grid;gap:14px} .two{grid-template-columns:1fr 1fr} @media(max-width:720px){.two{grid-template-columns:1fr}}
+    input,select,textarea{width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:10px}
     label{font-weight:600;font-size:14px}
+    .muted{color:var(--muted);font-size:14px}
+    .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:10px}
+    .error{background:#fef2f2;color:#991b1b;padding:12px;border-radius:10px}
   </style>
 </head>
 <body>
-  <header>
-    <div style="font-weight:800">[Ваше имя] — репетитор [Предмет]</div>
-    <nav>
-      <a href="#schedule">Запись</a>
-      <a href="#about">Обо мне</a>
-      <a href="#contacts">Контакты</a>
-    </nav>
-  </header>
+<header>
+  <div style="font-weight:800">Абубакиров Василий Владимирович</div>
+  <nav>
+    <a href="#schedule">Запись</a>
+    <a href="#about">Обо мне</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+</header>
 
-  <div class="hero">
-    <div class="hero-inner card">
-      <div>
-        <h1>Индивидуальные уроки [Предмета]</h1>
-        <p class="lead">Выберите удобное время и запишитесь онлайн. Работаю по Zoom/Meet, даю материалы и обратную связь.</p>
-        <p><a class="btn" href="#schedule">Записаться</a></p>
-        <p class="lead" style="font-size:14px">Время показывается с учетом вашего часового пояса.</p>
-      </div>
-      <div>
-        <img alt="Урок" src="https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=900&auto=format&fit=crop" style="width:100%;border-radius:12px">
-      </div>
-    </div>
-  </div>
+<section class="card">
+  <h1>Уроки по математике и физике</h1>
+  <p class="muted">Длительность занятия — 50 минут. Рабочие часы: пн–сб, 18:00–22:00. Время в формах показано с учетом вашего часового пояса.</p>
+  <p><a class="btn" href="#schedule">Записаться</a></p>
+</section>
 
-  <section id="schedule">
-    <h2>Выберите время</h2>
-    <div class="card">
-      <!-- Замените ВАШ_CALENDLY и slug события на свои -->
-      <div class="calendly-inline-widget"
-           data-url="https://calendly.com/ВАШ_CALENDLY/lesson-60min?hide_landing_page_details=1&hide_gdpr_banner=1"
-           style="min-width:320px;height:700px;"></div>
-    </div>
-  </section>
-
-  <section id="about">
-    <h2>Обо мне</h2>
-    <div class="card">
-      <p>Коротко о квалификации, опыте и результатах учеников. Например: 7 лет преподаю [предмет], готовлю к ЕГЭ/IELTS, средний рост балла +25%.</p>
-      <ul>
-        <li>Формат: онлайн или очно</li>
-        <li>Длительность: 60/90 минут</li>
-        <li>Уровень: с нуля до продвинутого</li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="contacts">
-    <h2>Контакты</h2>
-    <div class="card grid">
-      <!-- Formspree endpoint здесь -->
-      <form action="https://formspree.io/f/ВАШ_FORM_ID" method="POST">
-        <div class="grid" style="grid-template-columns:1fr 1fr">
-          <div>
-            <label>Имя</label>
-            <input name="name" required>
-          </div>
-          <div>
-            <label>Email</label>
-            <input type="email" name="email" required>
-          </div>
+<section id="schedule">
+  <h2>Запись на занятие</h2>
+  <div class="card">
+    <form id="bookingForm" class="grid" autocomplete="on">
+      <div class="two grid">
+        <div>
+          <label for="name">Имя</label>
+          <input id="name" name="name" required placeholder="Иван Иванов">
         </div>
         <div>
-          <label>Сообщение</label>
-          <textarea name="message" rows="4" placeholder="Напишите вопрос или пожелания по уроку"></textarea>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required placeholder="name@example.com">
         </div>
-        <p><button class="btn" type="submit">Отправить</button></p>
-      </form>
-      <div>
-        <p><strong>Мессенджеры:</strong></p>
-        <p>
-          <a class="btn" style="background:#25D366" href="https://wa.me/ВАШ_НОМЕР" target="_blank" rel="noopener">WhatsApp</a>
-          <a class="btn" style="background:#0088cc" href="https://t.me/ВАШ_ЮЗЕРНЕЙМ" target="_blank" rel="noopener">Telegram</a>
-        </p>
-        <p class="lead">Email: <a href="mailto:you@example.com">you@example.com</a></p>
       </div>
-    </div>
-  </section>
 
-  <footer>
-    <small>© [Год] [Ваше имя]. Все права защищены.</small>
-  </footer>
+      <div class="two grid">
+        <div>
+          <label for="subject">Предмет</label>
+          <select id="subject" name="subject">
+            <option>Математика</option>
+            <option>Физика</option>
+          </select>
+        </div>
+        <div>
+          <label for="date">Дата (в вашем часовом поясе)</label>
+          <input id="date" name="date" type="date" required>
+        </div>
+      </div>
 
-  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+      <div class="two grid">
+        <div>
+          <label for="time">Время (ваш часовой пояс: <span id="tzLabel"></span>)</label>
+          <select id="time" name="time" required></select>
+          <div class="muted">Слот 50 мин + 10 мин перерыв. Доступно каждый час: 18:00, 19:00, 20:00, 21:00.</div>
+        </div>
+        <div>
+          <label for="message">Комментарий (необязательно)</label>
+          <input id="message" name="message" placeholder="Пожелания по теме, уровень и т.д.">
+        </div>
+      </div>
+
+      <div id="status"></div>
+      <div>
+        <button class="btn" type="submit">Проверить и записаться</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="about">
+  <h2>Обо мне</h2>
+  <div class="card">
+    <p>Репетитор по математике и физике. Готовлю к экзаменам, помогаю подтянуть школьную программу и углубиться в предмет. Формат занятий — онлайн. Длительность урока — 50 минут.</p>
+  </div>
+</section>
+
+<section id="contacts">
+  <h2>Контакты</h2>
+  <div class="card">
+    <p><a class="btn" style="background:#0088cc" href="https://t.me/aviation09" target="_blank" rel="noopener">Связаться в Telegram (@aviation09)</a></p>
+    <p class="muted">Если удобнее по email — укажите его в форме записи, приглашение придёт автоматически.</p>
+  </div>
+</section>
+
+<footer>
+  <small>© 2025 Абубакиров Василий Владимирович</small>
+</footer>
+
+<script>
+  // URL вашего Apps Script Web App:
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwtEwIK2iat73soses37hWC-HKNuDlBdHs_4YDLNTUVMU675Oilm_cr-bFqixa-0BhYQw/exec';
+
+  // Фронтенд-настройки расписания (в часовом поясе пользователя; сервер дополнительно проверяет по времени преподавателя)
+  const SLOT_DURATION_MIN = 50;
+  const WORK_START = 18;   // 18:00
+  const WORK_END = 22;     // до 22:00 (последний старт 21:00)
+  const WORK_DAYS = [1,2,3,4,5,6]; // пн–сб
+
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
+  document.getElementById('tzLabel').textContent = tz;
+
+  const dateEl = document.getElementById('date');
+  const timeEl = document.getElementById('time');
+  const statusEl = document.getElementById('status');
+
+  // Поставим минимальную дату — сегодня, и сразу выберем ближайший рабочий день
+  const today = new Date();
+  dateEl.min = toYmd(today);
+  const initial = nextAllowedDate(today);
+  dateEl.value = toYmd(initial);
+
+  dateEl.addEventListener('change', () => {
+    const d = new Date(dateEl.value + 'T00:00:00');
+    if (!isAllowedDate(d)) {
+      const next = nextAllowedDate(d);
+      dateEl.value = toYmd(next);
+    }
+    populateTimes();
+  });
+
+  populateTimes();
+
+  function isAllowedDate(d) {
+    // getDay(): 0=вс,...,6=сб → нужно 1..6
+    const dow = d.getDay() === 0 ? 7 : d.getDay(); // 1..7
+    return WORK_DAYS.includes(dow);
+  }
+  function nextAllowedDate(d) {
+    const x = new Date(d);
+    while (!isAllowedDate(x) || toYmd(x) < toYmd(today)) {
+      x.setDate(x.getDate() + 1);
+    }
+    return x;
+  }
+  function toYmd(d) {
+    return d.toISOString().split('T')[0];
+  }
+
+  function populateTimes() {
+    timeEl.innerHTML = '';
+    const selectedDate = new Date(dateEl.value + 'T00:00:00');
+    if (!isAllowedDate(selectedDate)) {
+      showStatus('В этот день запись не ведётся (пн–сб). Выбрали ближайшую доступную дату.', 'error');
+      const next = nextAllowedDate(selectedDate);
+      dateEl.value = toYmd(next);
+    }
+
+    const now = new Date();
+    const isToday = toYmd(selectedDate) === toYmd(now);
+    let count = 0;
+
+    for (let h = WORK_START; h < WORK_END; h++) {
+      // пропускаем прошедшее для сегодняшнего дня
+      if (isToday) {
+        if (h < now.getHours()) continue;
+        if (h === now.getHours() && now.getMinutes() > 5) continue;
+      }
+      const opt = document.createElement('option');
+      opt.value = String(h).padStart(2,'0') + ':00';
+      opt.textContent = opt.value;
+      timeEl.appendChild(opt);
+      count++;
+    }
+
+    if (!count) {
+      showStatus('На выбранную дату свободных слотов не осталось. Выберите другой день.', 'error');
+    } else {
+      showStatus('', '');
+    }
+  }
+
+  function showStatus(html, type) {
+    statusEl.className = type === 'error' ? 'error' : (type === 'success' ? 'success' : '');
+    statusEl.innerHTML = html;
+  }
+
+  document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showStatus('Отправляем запрос…', '');
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const date = document.getElementById('date').value; // YYYY-MM-DD
+    const time = document.getElementById('time').value; // HH:mm
+
+    if (!date || !time) {
+      showStatus('Выберите дату и время', 'error');
+      return;
+    }
+
+    // Локальное время пользователя -> ISO UTC
+    const local = new Date(`${date}T${time}:00`);
+    const startIso = local.toISOString();
+
+    const payload = { name, email, subject, message, startIso, timezone: tz };
+
+    try {
+      // text/plain — чтобы не было preflight CORS у Apps Script
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        if (data.reason === 'busy') {
+          showStatus('Это время уже занято. Пожалуйста, выберите другое.', 'error');
+        } else if (data.reason === 'closed') {
+          showStatus('Запись доступна пн–сб с 18:00 до 22:00 (по времени преподавателя). Выберите другое время.', 'error');
+        } else if (data.reason === 'past') {
+          showStatus('Нельзя записаться на прошедшее время. Выберите другой слот.', 'error');
+        } else {
+          showStatus('Ошибка: ' + (data.error || 'неизвестно'), 'error');
+        }
+        return;
+        }
+
+      const start = new Date(data.startIso);
+      const end = new Date(data.endIso);
+      const gcalLink = makeGoogleCalLink(subject, name, start, end, message);
+
+      showStatus(
+        `Готово! Вы записаны на <b>${start.toLocaleString()}</b> (50 минут).<br>
+         Приглашение отправлено на <b>${email}</b> (проверьте папку «Входящие/Спам»).<br>
+         Добавить себе в календарь: <a href="${gcalLink}" target="_blank" rel="noopener">ссылка</a>.`,
+        'success'
+      );
+      e.target.reset();
+      populateTimes();
+    } catch (err) {
+      showStatus('Не удалось отправить заявку. Проверьте интернет и попробуйте снова.', 'error');
+      console.error(err);
+    }
+  });
+
+  function makeGoogleCalLink(subject, name, start, end, message) {
+    const fmt = (d) => {
+      const pad = (n) => String(n).padStart(2, '0');
+      return d.getUTCFullYear()
+        + pad(d.getUTCMonth()+1)
+        + pad(d.getUTCDate())
+        + 'T'
+        + pad(d.getUTCHours())
+        + pad(d.getUTCMinutes())
+        + pad(d.getUTCSeconds())
+        + 'Z';
+    };
+    const text = encodeURIComponent(`Урок (${subject}) — ${name}`);
+    const details = encodeURIComponent(message || 'Урок 50 минут');
+    const dates = fmt(start) + '/' + fmt(end);
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&details=${details}&dates=${dates}`;
+  }
+</script>
 </body>
 </html>
