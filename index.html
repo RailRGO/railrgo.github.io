@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Запись на уроки | Репетитор</title>
+  <meta name="description" content="Запишитесь на индивидуальный урок. Удобная запись онлайн, напоминания и выбор времени." />
+  <link rel="preconnect" href="https://assets.calendly.com">
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <style>
+    :root{--bg:#ffffff;--text:#1b1b1b;--accent:#2c7be5;--muted:#6b7280;--card:#f8fafc}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Noto Sans',sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
+    header{padding:32px 20px;max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+    nav a{margin-left:16px;color:var(--text);text-decoration:none;font-weight:600}
+    .btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600}
+    .hero{max-width:980px;margin:0 auto;padding:20px}
+    .hero-inner{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center}
+    h1{font-size:36px;margin:12px 0}
+    .lead{color:var(--muted)}
+    section{max-width:980px;margin:40px auto;padding:0 20px}
+    .card{background:var(--card);padding:20px;border-radius:16px}
+    .grid{display:grid;gap:16px}
+    @media (max-width:800px){.hero-inner{grid-template-columns:1fr}}
+    footer{max-width:980px;margin:40px auto 60px;padding:0 20px;color:var(--muted)}
+    input,textarea{width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:10px}
+    label{font-weight:600;font-size:14px}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="font-weight:800">[Ваше имя] — репетитор [Предмет]</div>
+    <nav>
+      <a href="#schedule">Запись</a>
+      <a href="#about">Обо мне</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="hero-inner card">
+      <div>
+        <h1>Индивидуальные уроки [Предмета]</h1>
+        <p class="lead">Выберите удобное время и запишитесь онлайн. Работаю по Zoom/Meet, даю материалы и обратную связь.</p>
+        <p><a class="btn" href="#schedule">Записаться</a></p>
+        <p class="lead" style="font-size:14px">Время показывается с учетом вашего часового пояса.</p>
+      </div>
+      <div>
+        <img alt="Урок" src="https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=900&auto=format&fit=crop" style="width:100%;border-radius:12px">
+      </div>
+    </div>
+  </div>
+
+  <section id="schedule">
+    <h2>Выберите время</h2>
+    <div class="card">
+      <!-- Замените ВАШ_CALENDLY и slug события на свои -->
+      <div class="calendly-inline-widget"
+           data-url="https://calendly.com/ВАШ_CALENDLY/lesson-60min?hide_landing_page_details=1&hide_gdpr_banner=1"
+           style="min-width:320px;height:700px;"></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>Обо мне</h2>
+    <div class="card">
+      <p>Коротко о квалификации, опыте и результатах учеников. Например: 7 лет преподаю [предмет], готовлю к ЕГЭ/IELTS, средний рост балла +25%.</p>
+      <ul>
+        <li>Формат: онлайн или очно</li>
+        <li>Длительность: 60/90 минут</li>
+        <li>Уровень: с нуля до продвинутого</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contacts">
+    <h2>Контакты</h2>
+    <div class="card grid">
+      <!-- Formspree endpoint здесь -->
+      <form action="https://formspree.io/f/ВАШ_FORM_ID" method="POST">
+        <div class="grid" style="grid-template-columns:1fr 1fr">
+          <div>
+            <label>Имя</label>
+            <input name="name" required>
+          </div>
+          <div>
+            <label>Email</label>
+            <input type="email" name="email" required>
+          </div>
+        </div>
+        <div>
+          <label>Сообщение</label>
+          <textarea name="message" rows="4" placeholder="Напишите вопрос или пожелания по уроку"></textarea>
+        </div>
+        <p><button class="btn" type="submit">Отправить</button></p>
+      </form>
+      <div>
+        <p><strong>Мессенджеры:</strong></p>
+        <p>
+          <a class="btn" style="background:#25D366" href="https://wa.me/ВАШ_НОМЕР" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="btn" style="background:#0088cc" href="https://t.me/ВАШ_ЮЗЕРНЕЙМ" target="_blank" rel="noopener">Telegram</a>
+        </p>
+        <p class="lead">Email: <a href="mailto:you@example.com">you@example.com</a></p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <small>© [Год] [Ваше имя]. Все права защищены.</small>
+  </footer>
+
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+</body>
+</html>
