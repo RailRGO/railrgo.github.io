@@ -39,24 +39,25 @@
 
   <style>
     :root{
-      --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06);
-      --accent:#6366f1; --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.6)
+      --bg:#0b1020; --text:#0f172a; --muted:#64748b; --card:#ffffff;
+      --accent:#6366f1; --border:#e5e7eb; --ring:rgba(99,102,241,0.2)
     }
-    @media (prefers-color-scheme: light){
-      :root{ --bg:#f8fafc; --text:#1b1b1b; --muted:#6b7280; --card:#ffffff; --border:#e5e7eb; --ring:rgba(37,99,235,0.2); --accent:#2563eb }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.6) }
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text); background:radial-gradient(1200px 600px at 100% -10%, rgba(99,102,241,.15), transparent 60%),
-                        radial-gradient(1000px 500px at -10% 100%, rgba(37,99,235,.15), transparent 60%),
-                        var(--bg);
+      color:var(--text);
+      background:radial-gradient(1200px 600px at 100% -10%, rgba(99,102,241,.12), transparent 60%),
+                 radial-gradient(1000px 500px at -10% 100%, rgba(37,99,235,.12), transparent 60%),
+                 var(--bg);
     }
     header,section,footer{max-width:960px;margin:0 auto;padding:20px}
     header{
       position:sticky; top:0; z-index:10; backdrop-filter: blur(10px);
-      background: linear-gradient(180deg, rgba(0,0,0,.25), transparent);
+      background: linear-gradient(180deg, rgba(0,0,0,.06), transparent);
       display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; border-bottom:1px solid var(--border)
     }
     .brand{font-weight:800; letter-spacing:.2px}
@@ -66,12 +67,12 @@
       display:inline-flex; align-items:center; gap:8px;
       background:linear-gradient(135deg, var(--accent), #8b5cf6);
       color:#fff; padding:12px 18px; border-radius:12px; text-decoration:none; font-weight:700;
-      border:0; cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.35); transition:transform .12s ease, box-shadow .12s ease
+      border:0; cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.25); transition:transform .12s ease, box-shadow .12s ease
     }
-    .btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(99,102,241,.45)}
+    .btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(99,102,241,.35)}
     .card{
       background:var(--card); padding:22px; border-radius:16px; border:1px solid var(--border);
-      box-shadow: 0 10px 30px rgba(0,0,0,.15)
+      box-shadow: 0 10px 30px rgba(0,0,0,.08)
     }
     .grid{display:grid; gap:16px}
     .two{grid-template-columns:1fr 1fr}
@@ -79,34 +80,21 @@
     label{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
     input,select{
       width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; color:var(--text);
-      background:rgba(255,255,255,.04); outline:none; transition:border-color .15s, box-shadow .15s, background .15s
+      background:rgba(255,255,255,.9); outline:none; transition:border-color .15s, box-shadow .15s, background .15s
     }
-    input:focus,select:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring); background:rgba(255,255,255,.06)}
+    @media (prefers-color-scheme: dark){
+      input,select{ background:rgba(255,255,255,.06) }
+    }
+    input:focus,select:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring)}
     .muted{color:var(--muted);font-size:14px}
     .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px}
     .error{background:#fef2f2;color:#991b1b;padding:12px;border-radius:12px}
     small.badge{background:#eef2ff;color:#3730a3;padding:2px 8px;border-radius:999px;font-weight:600}
     h1,h2{letter-spacing:.2px}
 
-    /* Маркировка «динамика» — бегущая строка */
-    .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0 auto}
-    .marquee__inner{display:flex;gap:32px;white-space:nowrap;will-change:transform;animation:marquee 30s linear infinite;color:var(--muted)}
-    .marquee strong{color:#c7d2fe}
-    @keyframes marquee{
-      from{transform:translateX(0)}
-      to{transform:translateX(-50%)}
-    }
-    @media (prefers-reduced-motion: reduce){
-      .marquee__inner{animation:none}
-    }
-
-    /* Плавное появление заголовка — «буквы заходят/выходят» */
-    .ch{display:inline-block;opacity:0;transform:translateX(-12px)}
-    .ch.show{animation:chIn 0.6s var(--delay) cubic-bezier(.2,.7,.2,1) forwards}
-    @keyframes chIn{
-      0%{opacity:0;transform:translateX(-12px)}
-      100%{opacity:1;transform:translateX(0)}
-    }
+    /* Мягкое появление заголовка */
+    .reveal{opacity:0; transform:translateY(8px); animation:fadeUp .6s ease-out .05s forwards}
+    @keyframes fadeUp{to{opacity:1; transform:translateY(0)}}
   </style>
 </head>
 <body>
@@ -118,16 +106,8 @@
   </nav>
 </header>
 
-<!-- Бегущая строка -->
-<div class="marquee">
-  <div class="marquee__inner" aria-hidden="true">
-    <span>Математика • Физика • Подготовка к экзаменам • Разбор задач • Индивидуальные занятия •</span>
-    <span>Математика • Физика • Подготовка к экзаменам • Разбор задач • Индивидуальные занятия •</span>
-  </div>
-</div>
-
 <section class="card">
-  <h1 id="hero">Онлайн‑уроки по математике и физике</h1>
+  <h1 class="reveal">Онлайн‑уроки по математике и физике</h1>
   <p class="muted">
     Один урок — 50 минут. Слоты показываются по московскому времени (МСК).
   </p>
@@ -191,7 +171,7 @@
 </footer>
 
 <script>
-  // УКАЖИТЕ ваш URL Apps Script Web App (оканчивается на /exec)
+  // URL вашего Apps Script Web App (оканчивается на /exec)
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJ-H7JnwPHRDyX2YZ1j_-cHLbwQ-Vh-2XTuXuS83jblHvvjUBwwyfsiCOEhB90GfPfTg/exec';
 
   const dateEl = document.getElementById('date');
@@ -227,8 +207,8 @@
 
       for (const s of data.slots) {
         const opt = document.createElement('option');
-        opt.value = s.startIso; // ISO UTC
-        opt.textContent = s.label; // "HH:mm МСК"
+        opt.value = s.startIso;       // ISO UTC
+        opt.textContent = s.label;    // "HH:mm МСК"
         timeEl.appendChild(opt);
       }
       showStatus('', '');
@@ -276,9 +256,16 @@
         return;
       }
 
+      // Форматируем подтверждение по МСК, 24 часа
       const start = new Date(data.startIso);
+      const mskLabel = start.toLocaleString('ru-RU', {
+        timeZone: 'Europe/Moscow',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+      });
+
       showStatus(
-        `Готово! Вы записаны на <b>${start.toLocaleString()}</b> (50 минут).<br>
+        `Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).<br>
          Приглашение отправлено на <b>${email}</b>.`,
         'success'
       );
@@ -296,21 +283,6 @@
     statusEl.className = type === 'error' ? 'error' : (type === 'success' ? 'success' : '');
     statusEl.innerHTML = html;
   }
-
-  // Анимация заголовка — «буквы выходят и заходят»
-  const hero = document.getElementById('hero');
-  const text = hero.textContent;
-  hero.textContent = '';
-  [...text].forEach((ch, i) => {
-    const span = document.createElement('span');
-    span.className = 'ch';
-    span.style.setProperty('--delay', `${i*0.03}s`);
-    span.textContent = ch;
-    hero.appendChild(span);
-  });
-  requestAnimationFrame(() => {
-    hero.querySelectorAll('.ch').forEach(el => el.classList.add('show'));
-  });
 </script>
 </body>
 </html>
