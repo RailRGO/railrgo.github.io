@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>Онлайн‑уроки | Запись на уроки по математике и физике</title>
   <meta name="description" content="Онлайн‑запись на индивидуальные уроки по математике и физике. Урок — 50 минут.">
   <link rel="canonical" href="https://railrgo.github.io/">
@@ -78,16 +77,36 @@
     .two{grid-template-columns:1fr 1fr}
     @media(max-width:720px){.two{grid-template-columns:1fr}}
     label{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
-    input,select,textarea{
+    input,select{
       width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; color:var(--text);
       background:rgba(255,255,255,.04); outline:none; transition:border-color .15s, box-shadow .15s, background .15s
     }
-    input:focus,select:focus,textarea:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring); background:rgba(255,255,255,.06)}
+    input:focus,select:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring); background:rgba(255,255,255,.06)}
     .muted{color:var(--muted);font-size:14px}
     .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px}
     .error{background:#fef2f2;color:#991b1b;padding:12px;border-radius:12px}
     small.badge{background:#eef2ff;color:#3730a3;padding:2px 8px;border-radius:999px;font-weight:600}
     h1,h2{letter-spacing:.2px}
+
+    /* Маркировка «динамика» — бегущая строка */
+    .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0 auto}
+    .marquee__inner{display:flex;gap:32px;white-space:nowrap;will-change:transform;animation:marquee 30s linear infinite;color:var(--muted)}
+    .marquee strong{color:#c7d2fe}
+    @keyframes marquee{
+      from{transform:translateX(0)}
+      to{transform:translateX(-50%)}
+    }
+    @media (prefers-reduced-motion: reduce){
+      .marquee__inner{animation:none}
+    }
+
+    /* Плавное появление заголовка — «буквы заходят/выходят» */
+    .ch{display:inline-block;opacity:0;transform:translateX(-12px)}
+    .ch.show{animation:chIn 0.6s var(--delay) cubic-bezier(.2,.7,.2,1) forwards}
+    @keyframes chIn{
+      0%{opacity:0;transform:translateX(-12px)}
+      100%{opacity:1;transform:translateX(0)}
+    }
   </style>
 </head>
 <body>
@@ -95,16 +114,22 @@
   <div class="brand">Онлайн‑уроки</div>
   <nav>
     <a href="#schedule">Запись</a>
-    <a href="#about">О сервисе</a>
     <a href="#contacts">Контакты</a>
   </nav>
 </header>
 
+<!-- Бегущая строка -->
+<div class="marquee">
+  <div class="marquee__inner" aria-hidden="true">
+    <span>Математика • Физика • Подготовка к экзаменам • Разбор задач • Индивидуальные занятия •</span>
+    <span>Математика • Физика • Подготовка к экзаменам • Разбор задач • Индивидуальные занятия •</span>
+  </div>
+</div>
+
 <section class="card">
-  <h1>Онлайн‑уроки по математике и физике</h1>
+  <h1 id="hero">Онлайн‑уроки по математике и физике</h1>
   <p class="muted">
-    Длительность занятия — 50 минут. Рабочие часы: пн–сб, 18:00–22:00 по Москве (Europe/Moscow).
-    Слоты ниже отображаются в вашем часовом поясе.
+    Один урок — 50 минут. Слоты показываются по московскому времени (МСК).
   </p>
   <p><a class="btn" href="#schedule">Записаться</a></p>
 </section>
@@ -133,21 +158,16 @@
           </select>
         </div>
         <div>
-          <label for="date">Дата (ваш часовой пояс: <span id="tzLabel"></span>)</label>
+          <label for="date">Дата (по Москве)</label>
           <input id="date" name="date" type="date" required>
-          <div class="muted">Учитываются рабочие дни (по Москве): пн–сб.</div>
+          <div class="muted">Выбирайте день; список времени ниже — по МСК.</div>
         </div>
       </div>
 
       <div>
-        <label for="time">Время слота</label>
+        <label for="time">Время слота (МСК)</label>
         <select id="time" name="time" required></select>
-        <div class="muted">Отображение: локальное время — эквивалент <b>18:00–22:00 МСК</b> выбранного дня.</div>
-      </div>
-
-      <div>
-        <label for="message">Комментарий (необязательно)</label>
-        <input id="message" name="message" placeholder="Пожелания по теме, уровень и т.д.">
+        <div class="muted">Если слотов нет — выберите другую дату.</div>
       </div>
 
       <div id="status" aria-live="polite"></div>
@@ -155,13 +175,6 @@
         <button class="btn" type="submit">Проверить и записаться</button>
       </div>
     </form>
-  </div>
-</section>
-
-<section id="about">
-  <h2>О сервисе</h2>
-  <div class="card">
-    <p>Индивидуальные онлайн‑уроки по математике и физике. Подготовка к экзаменам, помощь с текущей программой и углублённые занятия. Длительность одного урока — 50 минут.</p>
   </div>
 </section>
 
@@ -178,143 +191,50 @@
 </footer>
 
 <script>
-  // URL вашего Apps Script Web App (замените при необходимости)
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycby5WBIws3oNiBguaQhb837aMm33bHXY5pqopXtQARaIMz6r-eXChE_raaOTLx8oZUrb0w/exec';
-
-  // Настройки расписания (часы — по московскому времени)
-  const SERVICE_TZ = 'Europe/Moscow';
-  const WORK_DAYS = [1,2,3,4,5,6]; // 1=пн ... 7=вс — работаем пн–сб
-  const START_HOUR = 18;            // 18:00 МСК
-  const END_HOUR = 22;              // до 22:00 (последний старт — 21:00)
-  const SLOT_DURATION_MIN = 50;
-
-  const tzUser = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
-  document.getElementById('tzLabel').textContent = tzUser;
+  // УКАЖИТЕ ваш URL Apps Script Web App (оканчивается на /exec)
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJ-H7JnwPHRDyX2YZ1j_-cHLbwQ-Vh-2XTuXuS83jblHvvjUBwwyfsiCOEhB90GfPfTg/exec';
 
   const dateEl = document.getElementById('date');
   const timeEl = document.getElementById('time');
   const statusEl = document.getElementById('status');
 
-  // Минимальная дата — сегодня
-  const todayLocal = new Date();
-  dateEl.min = toYmd(todayLocal);
+  // Сегодня по Москве
+  function todayMskYmd() {
+    const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Moscow', year:'numeric', month:'2-digit', day:'2-digit' });
+    return fmt.format(new Date());
+  }
+  dateEl.min = todayMskYmd();
+  dateEl.value = todayMskYmd();
 
-  // Выбираем ближайшую допустимую дату (по расписанию в Москве)
-  const initialLocal = nextAllowedLocalDate(todayLocal);
-  dateEl.value = toYmd(initialLocal);
-
-  dateEl.addEventListener('change', () => {
-    const d = new Date(dateEl.value + 'T12:00:00');
-    if (!isAllowedLocalDate(d)) {
-      const next = nextAllowedLocalDate(d);
-      dateEl.value = toYmd(next);
-    }
-    populateTimes();
-  });
-
+  dateEl.addEventListener('change', populateTimes);
   populateTimes();
 
-  function showStatus(html, type) {
-    statusEl.className = type === 'error' ? 'error' : (type === 'success' ? 'success' : '');
-    statusEl.innerHTML = html;
-  }
-
-  // Проверяем: является ли локальная дата допустимой по дню недели в московском времени
-  function isAllowedLocalDate(localNoonDate) {
-    const wk = weekdayNumInTZ(localNoonDate, SERVICE_TZ); // 1..7
-    return WORK_DAYS.includes(wk);
-  }
-
-  function nextAllowedLocalDate(fromLocalDate) {
-    const d = new Date(fromLocalDate);
-    d.setHours(12,0,0,0); // полдень
-    while (!isAllowedLocalDate(d) || toYmd(d) < toYmd(todayLocal)) {
-      d.setDate(d.getDate() + 1);
-    }
-    return d;
-  }
-
-  function toYmd(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2,'0');
-    const dd = String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${dd}`;
-  }
-
-  function weekdayNumInTZ(dateLocal, tz) {
-    const w = new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'short' }).format(dateLocal);
-    const map = {Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6, Sun:7};
-    return map[w];
-  }
-
-  // Получить YYYY,MM,DD дня в МСК, соответствующего локальной дате
-  function mskYmdFromLocalYmd(localYmd) {
-    const localNoon = new Date(localYmd + 'T12:00:00');
-    const y = Number(new Intl.DateTimeFormat('en-CA', { timeZone: SERVICE_TZ, year:'numeric' }).format(localNoon));
-    const m = Number(new Intl.DateTimeFormat('en-CA', { timeZone: SERVICE_TZ, month:'2-digit' }).format(localNoon));
-    const d = Number(new Intl.DateTimeFormat('en-CA', { timeZone: SERVICE_TZ, day:'2-digit' }).format(localNoon));
-    return { y, m, d };
-  }
-
-  // Построить Date, представляющую момент y-m-d h:mm в часовом поясе tz (без библиотек)
-  function makeZonedDate(y, m, d, hh, mm, tz) {
-    const dtf = new Intl.DateTimeFormat('en-US', {
-      timeZone: tz, hour12: false,
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', second: '2-digit'
-    });
-    let utc = Date.UTC(y, m-1, d, hh, mm, 0);
-    for (let i = 0; i < 3; i++) {
-      const parts = Object.fromEntries(dtf.formatToParts(new Date(utc)).map(p => [p.type, p.value]));
-      const ay = Number(parts.year), am = Number(parts.month), ad = Number(parts.day);
-      const ah = Number(parts.hour), ami = Number(parts.minute), as = Number(parts.second);
-      const desired = Date.UTC(y, m-1, d, hh, mm, 0);
-      const actual  = Date.UTC(ay, am-1, ad, ah, ami, as);
-      const diff = desired - actual;
-      if (diff === 0) break;
-      utc += diff;
-    }
-    return new Date(utc);
-  }
-
-  function populateTimes() {
+  async function populateTimes() {
     timeEl.innerHTML = '';
-    const localYmd = dateEl.value;
-    if (!localYmd) return;
+    const ymd = dateEl.value;
+    if (!ymd) return;
+    showStatus('Загружаем слоты…', '');
 
-    // День в МСК для выбранной локальной даты
-    const { y, m, d } = mskYmdFromLocalYmd(localYmd);
+    try {
+      const res = await fetch(`${GAS_URL}?action=slots&date=${encodeURIComponent(ymd)}`);
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'ошибка');
 
-    // Проверка рабочего дня в МСК
-    const mskNoon = makeZonedDate(y, m, d, 12, 0, SERVICE_TZ);
-    if (!WORK_DAYS.includes(weekdayNumInTZ(mskNoon, SERVICE_TZ))) {
-      showStatus('В этот день (по МСК) запись не ведётся. Выбран ближайший доступный.', 'error');
-      const next = nextAllowedLocalDate(new Date(localYmd + 'T12:00:00'));
-      dateEl.value = toYmd(next);
-      return populateTimes();
-    }
+      if (!data.slots || data.slots.length === 0) {
+        showStatus('На выбранную дату слоты отсутствуют.', 'error');
+        return;
+      }
 
-    const now = new Date();
-    let count = 0;
-    for (let h = START_HOUR; h < END_HOUR; h++) {
-      // Слот: h:00 по МСК → конвертируем в локальное время пользователя
-      const slotStart = makeZonedDate(y, m, d, h, 0, SERVICE_TZ); // абсолютное время
-      if (slotStart.getTime() < now.getTime() + 2*60000) continue; // прошедшие слоты скрываем
-
-      const localLabel = slotStart.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-      const mskLabel = String(h).padStart(2,'0') + ':00 МСК';
-
-      const opt = document.createElement('option');
-      opt.value = slotStart.toISOString(); // отправляем ISO UTC
-      opt.textContent = `${localLabel} (=${mskLabel})`;
-      timeEl.appendChild(opt);
-      count++;
-    }
-
-    if (!count) {
-      showStatus('На выбранную дату (по МСК) свободных слотов не осталось. Выберите другой день.', 'error');
-    } else {
+      for (const s of data.slots) {
+        const opt = document.createElement('option');
+        opt.value = s.startIso; // ISO UTC
+        opt.textContent = s.label; // "HH:mm МСК"
+        timeEl.appendChild(opt);
+      }
       showStatus('', '');
+    } catch (e) {
+      console.error(e);
+      showStatus('Не удалось загрузить слоты. Обновите страницу позже.', 'error');
     }
   }
 
@@ -325,7 +245,6 @@
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const subject = document.getElementById('subject').value.trim();
-    const message = document.getElementById('message').value.trim();
     const startIso = document.getElementById('time').value;
 
     if (!startIso) {
@@ -333,12 +252,12 @@
       return;
     }
 
-    const payload = { name, email, subject, message, startIso, timezone: tzUser };
+    const payload = { name, email, subject, startIso };
 
     try {
       const res = await fetch(GAS_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // без preflight
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       });
 
@@ -346,11 +265,11 @@
 
       if (!data.ok) {
         if (data.reason === 'busy') {
-          showStatus('Это время уже занято. Пожалуйста, выберите другое.', 'error');
-        } else if (data.reason === 'closed') {
-          showStatus('Запись доступна пн–сб с 18:00 до 22:00 по Москве. Выберите другое время.', 'error');
+          showStatus('Этот слот уже занят. Пожалуйста, выберите другой.', 'error');
         } else if (data.reason === 'past') {
           showStatus('Нельзя записаться на прошедшее время. Выберите другой слот.', 'error');
+        } else if (data.reason === 'closed') {
+          showStatus('Слот недоступен. Выберите другое время.', 'error');
         } else {
           showStatus('Ошибка: ' + (data.error || 'неизвестно'), 'error');
         }
@@ -358,25 +277,40 @@
       }
 
       const start = new Date(data.startIso);
-
       showStatus(
         `Готово! Вы записаны на <b>${start.toLocaleString()}</b> (50 минут).<br>
-         Приглашение отправлено на <b>${email}</b> (проверьте «Входящие/Спам»).<br><br>
-         <small class="badge">Управление записью</small><br>
-         <a href="${data.cancelUrl}" target="_blank" rel="noopener">Отменить запись</a>`,
+         Приглашение отправлено на <b>${email}</b>.`,
         'success'
       );
 
       e.target.reset();
+      dateEl.value = todayMskYmd();
       populateTimes();
     } catch (err) {
       showStatus('Не удалось отправить заявку. Проверьте интернет и попробуйте снова.', 'error');
       console.error(err);
     }
   });
+
+  function showStatus(html, type) {
+    statusEl.className = type === 'error' ? 'error' : (type === 'success' ? 'success' : '');
+    statusEl.innerHTML = html;
+  }
+
+  // Анимация заголовка — «буквы выходят и заходят»
+  const hero = document.getElementById('hero');
+  const text = hero.textContent;
+  hero.textContent = '';
+  [...text].forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.className = 'ch';
+    span.style.setProperty('--delay', `${i*0.03}s`);
+    span.textContent = ch;
+    hero.appendChild(span);
+  });
+  requestAnimationFrame(() => {
+    hero.querySelectorAll('.ch').forEach(el => el.classList.add('show'));
+  });
 </script>
 </body>
 </html>
-
-
-
