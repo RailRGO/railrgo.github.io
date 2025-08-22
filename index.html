@@ -6,8 +6,6 @@
   <title>Онлайн‑уроки | Запись на уроки по математике и физике</title>
   <meta name="description" content="Онлайн‑запись на индивидуальные уроки по математике и физике. Урок — 50 минут.">
   <link rel="canonical" href="https://railrgo.github.io/">
-
-  <!-- Favicons -->
   <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -17,7 +15,6 @@
   <meta name="theme-color" content="#0b1020">
   <meta name="msapplication-TileColor" content="#0b1020">
 
-  <!-- OG -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ru_RU">
   <meta property="og:site_name" content="Онлайн‑уроки">
@@ -26,72 +23,32 @@
   <meta property="og:url" content="https://railrgo.github.io/">
   <meta property="og:image" content="https://railrgo.github.io/og-image.png">
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Онлайн‑уроки по математике и физике">
-  <meta name="twitter:description" content="Запишитесь на удобное время. Урок — 50 минут.">
-  <meta name="twitter:image" content="https://railrgo.github.io/og-image.png">
-
-  <!-- Шрифт -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      /* Светлая тема по умолчанию — лучшая читаемость */
-      --bg:#f8fafc; --text:#0f172a; --muted:#475569; --card:#ffffff;
-      --accent:#6366f1; --border:#e5e7eb; --ring:rgba(99,102,241,0.2);
-      --shadow: 0 10px 30px rgba(2,6,23,0.08);
-    }
-    @media (prefers-color-scheme: dark){
-      :root{ --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.5); --shadow: 0 12px 32px rgba(0,0,0,0.35) }
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(900px 500px at 110% -10%, rgba(99,102,241,.10), transparent 60%),
-        radial-gradient(700px 350px at -10% 110%, rgba(37,99,235,.10), transparent 60%),
-        var(--bg);
-    }
+    :root{ --bg:#f8fafc; --text:#0f172a; --muted:#475569; --card:#ffffff; --accent:#6366f1; --border:#e5e7eb; --ring:rgba(99,102,241,0.2); --shadow: 0 10px 30px rgba(2,6,23,0.08) }
+    @media (prefers-color-scheme: dark){ :root{ --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.5); --shadow: 0 12px 32px rgba(0,0,0,0.35) } }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{ margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
+      background: radial-gradient(900px 500px at 110% -10%, rgba(99,102,241,.10), transparent 60%),
+                  radial-gradient(700px 350px at -10% 110%, rgba(37,99,235,.10), transparent 60%), var(--bg) }
     header,section,footer{max-width:960px;margin:0 auto;padding:20px}
-    header{
-      position:sticky; top:0; z-index:10;
-      background: color-mix(in srgb, var(--bg) 92%, transparent);
-      backdrop-filter: blur(8px);
-      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
-      border-bottom:1px solid var(--border)
-    }
+    header{ position:sticky; top:0; z-index:10; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px);
+      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; border-bottom:1px solid var(--border) }
     .brand{font-weight:800; letter-spacing:.2px}
     nav a{margin-left:16px; color:var(--text); text-decoration:none; font-weight:600}
-    .btn{
-      display:inline-flex; align-items:center; gap:8px;
-      background:linear-gradient(135deg, var(--accent), #8b5cf6);
-      color:#fff; padding:12px 18px; border-radius:12px; text-decoration:none; font-weight:700;
-      border:0; cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.25); transition:transform .12s ease, box-shadow .12s ease
-    }
+    .btn{ display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, var(--accent), #8b5cf6);
+      color:#fff; padding:12px 18px; border-radius:12px; font-weight:700; border:0; cursor:pointer;
+      box-shadow:0 8px 24px rgba(99,102,241,.25); transition:transform .12s ease, box-shadow .12s ease }
     .btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(99,102,241,.35)}
-    .card{
-      background:var(--card); padding:24px; border-radius:16px; border:1px solid var(--border);
-      box-shadow: var(--shadow)
-    }
-    section.card{ margin-top:16px }
-    .grid{display:grid; gap:16px}
-    .two{grid-template-columns:1fr 1fr}
-    @media(max-width:720px){.two{grid-template-columns:1fr}}
+    .card{ background:var(--card); padding:24px; border-radius:16px; border:1px solid var(--border); box-shadow: var(--shadow) }
+    section.card{ margin-top:16px } .grid{display:grid; gap:16px} .two{grid-template-columns:1fr 1fr} @media(max-width:720px){.two{grid-template-columns:1fr}}
     label{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
-    input,select{
-      width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; color:var(--text);
-      background:var(--card); outline:none; transition:border-color .15s, box-shadow .15s
-    }
+    input,select{ width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; color:var(--text); background:var(--card); outline:none; transition:border-color .15s, box-shadow .15s }
     input:focus,select:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring)}
-    .muted{color:var(--muted);font-size:14px}
-    .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px}
-    .error{background:#fee2e2;color:#991b1b;padding:12px;border-radius:12px}
-    small.badge{background:#eef2ff;color:#3730a3;padding:2px 8px;border-radius:999px;font-weight:600}
+    .muted{color:var(--muted);font-size:14px} .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px} .error{background:#fee2e2;color:#991b1b;padding:12px;border-radius:12px}
     h1,h2{letter-spacing:.2px;margin:0 0 10px}
   </style>
 </head>
@@ -115,28 +72,19 @@
   <div class="card">
     <form id="bookingForm" class="grid" autocomplete="on">
       <div class="two grid">
-        <div>
-          <label for="name">Имя</label>
-          <input id="name" name="name" required placeholder="Иван Иванов">
-        </div>
-        <div>
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required placeholder="name@example.com">
-        </div>
+        <div><label for="name">Имя</label><input id="name" name="name" required placeholder="Иван Иванов"></div>
+        <div><label for="email">Email</label><input id="email" name="email" type="email" required placeholder="name@example.com"></div>
       </div>
 
       <div class="two grid">
         <div>
           <label for="subject">Предмет</label>
-          <select id="subject" name="subject">
-            <option>Математика</option>
-            <option>Физика</option>
-          </select>
+          <select id="subject" name="subject"><option>Математика</option><option>Физика</option></select>
         </div>
         <div>
           <label for="date">Дата (по Москве)</label>
           <input id="date" name="date" type="date" required>
-          <div class="muted">Список времени ниже — по МСК. Выберите подходящий слот.</div>
+          <div class="muted">Список времени ниже — по МСК.</div>
         </div>
       </div>
 
@@ -147,9 +95,7 @@
       </div>
 
       <div id="status" aria-live="polite"></div>
-      <div>
-        <button class="btn" type="submit">Проверить и записаться</button>
-      </div>
+      <div><button class="btn" type="submit">Проверить и записаться</button></div>
     </form>
   </div>
 </section>
@@ -162,13 +108,10 @@
   </div>
 </section>
 
-<footer>
-  <small>© 2025 Онлайн‑уроки</small>
-</footer>
+<footer><small>© 2025 Онлайн‑уроки</small></footer>
 
 <script>
-  // URL вашего Apps Script Web App (оканчивается на /exec)
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxTJ4fFnhMaoviWbkjlAKP4o1vPzDVymcNoJwzsMMKIMAK1Ds-j0jxBnN8XtgVEn7CtCg/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwguD55czIu9gIEtvgTL8m32WqmNaia8r154TLCuAeWgUm8PzQNuR7Jt2fAKBp9mQkWpg/exec';
 
   const dateEl = document.getElementById('date');
   const timeEl = document.getElementById('time');
@@ -180,7 +123,6 @@
   }
   dateEl.min = todayMskYmd();
 
-  // Ставим ближайшую дату со слотами (если нет — сегодня)
   initDate();
 
   async function initDate() {
@@ -208,14 +150,12 @@
       if (!data.ok) throw new Error(data.error || 'ошибка');
 
       if (!data.slots || data.slots.length === 0) {
-        showStatus('На выбранную дату слоты отсутствуют.', 'error');
-        return;
+        showStatus('На выбранную дату слоты отсутствуют.', 'error'); return;
       }
-
       for (const s of data.slots) {
         const opt = document.createElement('option');
-        opt.value = s.startIso;       // ISO UTC
-        opt.textContent = s.label;    // "HH:mm МСК"
+        opt.value = s.startIso;
+        opt.textContent = s.label;
         timeEl.appendChild(opt);
       }
       showStatus('', '');
@@ -233,55 +173,24 @@
     const email = document.getElementById('email').value.trim();
     const subject = document.getElementById('subject').value.trim();
     const startIso = document.getElementById('time').value;
-
-    if (!startIso) {
-      showStatus('Выберите время слота', 'error');
-      return;
-    }
+    if (!startIso) { showStatus('Выберите время слота', 'error'); return; }
 
     const payload = { name, email, subject, startIso };
-
     try {
-      const res = await fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      });
-
+      const res = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
       const data = await res.json();
-
       if (!data.ok) {
-        if (data.reason === 'busy') {
-          showStatus('Этот слот уже занят. Пожалуйста, выберите другой.', 'error');
-        } else if (data.reason === 'past') {
-          showStatus('Нельзя записаться на прошедшее время. Выберите другой слот.', 'error');
-        } else if (data.reason === 'closed') {
-          showStatus('Слот недоступен. Выберите другое время.', 'error');
-        } else {
-          showStatus('Ошибка: ' + (data.error || 'неизвестно'), 'error');
-        }
-        return;
+        const map = { busy:'Этот слот уже занят. Пожалуйста, выберите другой.', past:'Нельзя записаться на прошедшее время.', closed:'Слот недоступен. Выберите другое время.' };
+        showStatus(map[data.reason] || ('Ошибка: ' + (data.error || 'неизвестно')), 'error'); return;
       }
-
-      // Подтверждение в МСК, 24 часа
       const start = new Date(data.startIso);
-      const mskLabel = start.toLocaleString('ru-RU', {
-        timeZone: 'Europe/Moscow',
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
-      });
-
-      showStatus(
-        `Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).<br>
-         Приглашение отправлено на <b>${email}</b>.`,
-        'success'
-      );
-
+      const mskLabel = start.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+      showStatus(`Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).<br>Приглашение отправлено на <b>${email}</b>.`, 'success');
       e.target.reset();
-      initDate(); // перезагружаем слоты
+      initDate();
     } catch (err) {
-      showStatus('Не удалось отправить заявку. Проверьте интернет и попробуйте снова.', 'error');
       console.error(err);
+      showStatus('Не удалось отправить заявку. Проверьте интернет и попробуйте снова.', 'error');
     }
   });
 
