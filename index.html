@@ -32,24 +32,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* Базовые переменные (светлая тема по умолчанию) */
     :root{
       --bg:#f8fafc; --text:#0f172a; --muted:#475569; --card:#ffffff;
       --accent:#6366f1; --border:#e5e7eb; --ring:rgba(99,102,241,0.2);
       --shadow: 0 10px 30px rgba(2,6,23,0.08);
       --btn-grad: linear-gradient(135deg, var(--accent), #8b5cf6);
-      color-scheme: light; /* системные контролы (скроллбары, select и т.д.) */
+      color-scheme: light;
     }
-    /* Тёмная тема вручную */
     [data-theme="dark"]{
       --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06);
       --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.5);
       --shadow: 0 12px 32px rgba(0,0,0,0.35);
       color-scheme: dark;
     }
-    /* На случай, если JavaScript выключен — уважаем системную тему */
     @media (prefers-color-scheme: dark){
-      :root:not([data-theme="light"]){ /* если явно не светлая */
+      :root:not([data-theme="light"]){
         --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06);
         --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.5);
         --shadow: 0 12px 32px rgba(0,0,0,0.35);
@@ -68,7 +65,6 @@
       transition: background-color .2s ease, color .2s ease;
     }
 
-    /* Общий контейнер */
     header,section,footer{max-width:960px;margin:0 auto;padding:20px}
     .padless{padding-left:0; padding-right:0}
 
@@ -83,7 +79,6 @@
     nav{display:flex; align-items:center; gap:16px}
     nav a{color:var(--text); text-decoration:none; font-weight:600}
 
-    /* Переключатель темы */
     .toggle{
       display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--border);
       border-radius:10px; background:var(--card); color:var(--text); cursor:pointer; font-weight:600;
@@ -110,6 +105,8 @@
     .two{grid-template-columns:1fr 1fr}
     @media(max-width:720px){.two{grid-template-columns:1fr}}
 
+    .hidden{display:none !important}
+
     label{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
     input,select{
       width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; color:var(--text);
@@ -118,14 +115,11 @@
     input:focus,select:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring)}
     input::placeholder{ color:var(--muted); opacity:.9 }
 
-    /* Стили для native select (тема + стрелка) */
     select{
       appearance:none; -webkit-appearance:none; -moz-appearance:none;
-      padding-right:40px; /* место под стрелку */
+      padding-right:40px;
       background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%236366f1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
-      background-repeat:no-repeat;
-      background-position:right 12px center;
-      background-size:16px 16px;
+      background-repeat:no-repeat; background-position:right 12px center; background-size:16px 16px;
     }
     [data-theme="dark"] select{
       background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%239aa5b1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
@@ -135,7 +129,6 @@
 
     .muted{color:var(--muted);font-size:14px}
 
-    /* Статусы + спиннер */
     #status{margin-top:8px}
     .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px}
     .error{background:#fee2e2;color:#991b1b;padding:12px;border-radius:12px}
@@ -144,7 +137,6 @@
     @keyframes spin{to{transform:rotate(360deg)}}
 
     h1,h2{letter-spacing:.2px;margin:0 0 10px}
-
     footer{ text-align:center; color:var(--muted) }
   </style>
 </head>
@@ -164,7 +156,6 @@
   </nav>
 </header>
 
-<!-- Хиро-блок -->
 <section class="card">
   <h1>Онлайн‑уроки по математике и физике</h1>
   <p class="muted" style="max-width:720px">
@@ -174,7 +165,6 @@
   <p><a class="btn" href="#schedule">Записаться</a></p>
 </section>
 
-<!-- Раздел записи -->
 <section id="schedule" class="padless">
   <h2 style="padding:0 20px">Запись на занятие</h2>
   <div class="card">
@@ -186,7 +176,7 @@
         </div>
         <div>
           <label for="email">Email</label>
-          <input id="email" name="email" type="email" required placeholder="name@example.com">
+          <input id="email" name="email" type="email" placeholder="name@example.com">
         </div>
       </div>
 
@@ -211,6 +201,24 @@
         <div class="muted">Если слотов нет — выберите другую дату.</div>
       </div>
 
+      <div class="two grid">
+        <div>
+          <label for="channel">Куда прислать уведомление?</label>
+          <select id="channel" name="channel">
+            <option value="email">Email</option>
+            <option value="telegram">Telegram</option>
+          </select>
+        </div>
+        <div id="tgFields" class="hidden">
+          <label for="phone">Телефон для Telegram (+7…)</label>
+          <input id="phone" name="phone" type="tel" placeholder="+7 999 123-45-67">
+          <div class="muted" id="tgHint">
+            Чтобы получать уведомления в Telegram, откройте бота и нажмите Start:
+            <a id="tgLink" class="btn" style="padding:6px 10px;margin-left:6px" target="_blank" rel="noopener">Открыть бота</a>
+          </div>
+        </div>
+      </div>
+
       <div id="status" aria-live="polite"></div>
       <div>
         <button class="btn" type="submit">Проверить и записаться</button>
@@ -223,7 +231,7 @@
   <h2 style="padding:0 20px">Контакты</h2>
   <div class="card">
     <p><a class="btn" style="background:#0088cc" href="https://t.me/aviation09" target="_blank" rel="noopener">Связаться в Telegram</a></p>
-    <p class="muted">Приглашение придёт на указанный email автоматически.</p>
+    <p class="muted">Приглашение (если выбран Email) придёт на указанный адрес автоматически.</p>
   </div>
 </section>
 
@@ -232,14 +240,14 @@
 </footer>
 
 <script>
-  // URL вашего Apps Script Web App (оканчивается на /exec)
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxWOwOhLNwIRVlMP4n10TqhOIYIKOdXzJJ8DzY8dRDg5a6i1MFthNRM-E1VFZE8oZT0cg/exec';
+  // Текущий Web App URL (оканчивается на /exec)
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwGHupDfYV-nYLnVpXUpaJvVtqUnV8Hvn3cjooPpvFBY9zN99424QwMnM6_L9EMbTB73Q/exec';
+  const BOT_USERNAME = 'TutorAVVbot';
 
-  // Тема: инициализация и переключатель
+  // Тема
   const themeBtn = document.getElementById('themeToggle');
   const themeLabel = document.getElementById('themeLabel');
   initTheme();
-
   function initTheme(){
     const saved = localStorage.getItem('theme');
     const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -252,7 +260,6 @@
     const isDark = mode === 'dark';
     themeBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
     themeLabel.textContent = isDark ? 'Тёмная тема' : 'Светлая тема';
-    // Обновим иконку
     themeBtn.querySelector('svg').innerHTML = isDark
       ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>'
       : '<path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36-1.42-1.42M7.05 7.05 5.64 5.64m12.02 0-1.41 1.41M7.05 16.95l-1.41 1.41"></path><circle cx="12" cy="12" r="4"></circle>';
@@ -262,12 +269,16 @@
     setTheme(current === 'dark' ? 'light' : 'dark');
   });
 
-  // Бронирование
+  // Элементы формы
   const dateEl = document.getElementById('date');
   const timeEl = document.getElementById('time');
   const statusEl = document.getElementById('status');
+  const emailEl = document.getElementById('email');
+  const channelEl = document.getElementById('channel');
+  const tgFields = document.getElementById('tgFields');
+  const phoneEl = document.getElementById('phone');
+  const tgLinkEl = document.getElementById('tgLink');
 
-  // Блокировка статуса (для «липких» сообщений)
   let statusLockUntil = 0;
 
   function todayMskYmd() {
@@ -275,7 +286,6 @@
     return fmt.format(new Date());
   }
   dateEl.min = todayMskYmd();
-
   initDate();
 
   async function initDate() {
@@ -290,6 +300,33 @@
   }
 
   dateEl.addEventListener('change', populateTimes);
+  channelEl.addEventListener('change', updateChannelUI);
+  phoneEl.addEventListener('input', updateTgLink);
+
+  function updateChannelUI(){
+    const ch = channelEl.value;
+    const isTg = ch === 'telegram';
+    tgFields.classList.toggle('hidden', !isTg);
+    phoneEl.required = isTg;
+    emailEl.required = !isTg; // email обязателен только при Email‑канале
+    updateTgLink();
+  }
+  function normalizePhoneLocal(s){
+    const digits = String(s||'').replace(/\D/g,'');
+    if (!digits) return '';
+    let d = digits;
+    if (d.length === 11 && d.startsWith('8')) d = '7' + d.slice(1); // RU 8xxxxxxxxxx -> +7xxxxxxxxxx
+    return '+' + d;
+  }
+  function mkTgDeepLink(phoneE164){
+    const digits = String(phoneE164||'').replace(/\D/g,'');
+    return digits ? `https://t.me/${BOT_USERNAME}?start=bindp${digits}` : `https://t.me/${BOT_USERNAME}`;
+  }
+  function updateTgLink(){
+    const p = normalizePhoneLocal(phoneEl.value);
+    tgLinkEl.href = mkTgDeepLink(p);
+  }
+  updateChannelUI();
 
   async function populateTimes() {
     timeEl.innerHTML = '';
@@ -326,12 +363,18 @@
     showLoading('Отправляем запрос…');
 
     const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
+    const email = emailEl.value.trim();
     const subject = document.getElementById('subject').value.trim();
     const startIso = document.getElementById('time').value;
-    if (!startIso) { showStatus('Выберите время слота', 'error'); return; }
+    const channel = channelEl.value;
+    const phoneRaw = phoneEl.value.trim();
+    const phone = channel === 'telegram' ? normalizePhoneLocal(phoneRaw) : '';
 
-    const payload = { name, email, subject, startIso };
+    if (!startIso) { showStatus('Выберите время слота', 'error'); return; }
+    if (channel === 'email' && !email) { showStatus('Укажите email или выберите Telegram.', 'error'); return; }
+    if (channel === 'telegram' && !phone) { showStatus('Укажите телефон в формате +7… для Telegram.', 'error'); return; }
+
+    const payload = { name, email, subject, startIso, channel, phone };
     try {
       const res = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
       const data = await res.json();
@@ -344,15 +387,25 @@
       const start = new Date(data.startIso);
       const mskLabel = start.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 
-      // Липкий статус на 6 секунд
-      showStatus(`Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).<br>Приглашение отправлено на <b>${email}</b>.`, 'success', { stickyMs: 6000 });
+      let extra = '';
+      if (channel === 'telegram') {
+        if (data.tg && data.tg.needStart && data.tg.deepLink) {
+          extra = `<br><br>Чтобы получать уведомления в Telegram, откройте бота и нажмите Start: <a href="${data.tg.deepLink}" target="_blank" rel="noopener">@${BOT_USERNAME}</a>`;
+        } else {
+          extra = '<br><br>Уведомление отправлено в Telegram ✅';
+        }
+      } else if (channel === 'email') {
+        extra = `<br><br>Приглашение отправлено на <b>${email}</b>.`;
+      }
 
-      // Дадим сообщению пожить, а потом обновим слоты и очистим статус
+      showStatus(`Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).${extra}`, 'success', { stickyMs: 8000 });
+
       setTimeout(() => {
         e.target.reset();
+        updateChannelUI();
         initDate();
         setTimeout(() => showStatus('', ''), 500);
-      }, 6200);
+      }, 8200);
 
     } catch (err) {
       console.error(err);
@@ -361,14 +414,14 @@
   });
 
   function showLoading(text){
-    if (Date.now() < statusLockUntil) return; // не перетирать липкий success
+    if (Date.now() < statusLockUntil) return;
     statusEl.className = 'loading';
     statusEl.innerHTML = `<span class="spinner" aria-hidden="true"></span><span>${text}</span>`;
   }
   function showStatus(html, type, opts) {
     opts = opts || {};
     if (!html) {
-      if (Date.now() < statusLockUntil) return; // пока «липкий» — не очищаем
+      if (Date.now() < statusLockUntil) return;
       statusEl.className = '';
       statusEl.innerHTML = '';
       return;
