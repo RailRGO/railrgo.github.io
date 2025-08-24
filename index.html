@@ -7,7 +7,6 @@
   <meta name="description" content="Онлайн‑запись на индивидуальные уроки по математике и физике. Урок — 50 минут.">
   <link rel="canonical" href="https://railrgo.github.io/">
 
-  <!-- Favicons -->
   <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -17,7 +16,6 @@
   <meta name="theme-color" content="#0b1020">
   <meta name="msapplication-TileColor" content="#0b1020">
 
-  <!-- OG -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ru_RU">
   <meta property="og:site_name" content="Онлайн‑уроки">
@@ -26,7 +24,6 @@
   <meta property="og:url" content="https://railrgo.github.io/">
   <meta property="og:image" content="https://railrgo.github.io/og-image.png">
 
-  <!-- Шрифт -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -377,6 +374,9 @@
         extra = `<br><br><b>Важно:</b> чтобы получать напоминания в Telegram, <a href="${data.tme}" target="_blank" rel="noopener"><b>активируйте бота по этой ссылке</b></a>.`;
       } else if (data.channel === 'email') {
         extra = `<br><br>Приглашение отправлено на <b>${email}</b>.`;
+        if (data.tme) {
+          extra += `<br><br><b>P. S.</b> Вы также можете получать напоминания в Telegram. Для этого <a href="${data.tme}" target="_blank" rel="noopener"><b>активируйте бота по этой ссылке</b></a>.`;
+        }
       }
 
       showStatus(`Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).${extra}`, 'success', { stickyMs: 15000 });
