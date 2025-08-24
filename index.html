@@ -212,10 +212,7 @@
         <div id="tgFields" class="hidden">
           <label for="phone">Телефон для Telegram (+7…)</label>
           <input id="phone" name="phone" type="tel" placeholder="+7 999 123-45-67">
-          <div class="muted" id="tgHint">
-            Чтобы получать уведомления в Telegram, откройте бота и нажмите Start:
-            <a id="tgLink" class="btn" style="padding:6px 10px;margin-left:6px" target="_blank" rel="noopener">Открыть бота</a>
-          </div>
+          <div class="muted">На этот номер придёт уведомление в Telegram.</div>
         </div>
       </div>
 
@@ -241,8 +238,7 @@
 
 <script>
   // Текущий Web App URL (оканчивается на /exec)
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxAZlDQNhoaTwI8WrhXdVw_2ofng1jPCKpTRHhx_JFCIliXWje0_Rh8rC4jMpx_WlpmiQ/exec';
-  const BOT_USERNAME = 'TutorAVVbot';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxx37iG3UL-_TZQuiNCdftqJoc5Z8lnSjNEzuhB3xvS-XCd_Y0t-6SgY4TRut-1sQ7nFg/exec';
 
   // Тема
   const themeBtn = document.getElementById('themeToggle');
@@ -277,7 +273,6 @@
   const channelEl = document.getElementById('channel');
   const tgFields = document.getElementById('tgFields');
   const phoneEl = document.getElementById('phone');
-  const tgLinkEl = document.getElementById('tgLink');
 
   let statusLockUntil = 0;
 
@@ -301,30 +296,20 @@
 
   dateEl.addEventListener('change', populateTimes);
   channelEl.addEventListener('change', updateChannelUI);
-  phoneEl.addEventListener('input', updateTgLink);
 
   function updateChannelUI(){
     const ch = channelEl.value;
     const isTg = ch === 'telegram';
     tgFields.classList.toggle('hidden', !isTg);
     phoneEl.required = isTg;
-    emailEl.required = !isTg; // email обязателен только при Email‑канале
-    updateTgLink();
+    emailEl.required = !isTg;
   }
   function normalizePhoneLocal(s){
     const digits = String(s||'').replace(/\D/g,'');
     if (!digits) return '';
     let d = digits;
-    if (d.length === 11 && d.startsWith('8')) d = '7' + d.slice(1); // RU 8xxxxxxxxxx -> +7xxxxxxxxxx
+    if (d.length === 11 && d.startsWith('8')) d = '7' + d.slice(1);
     return '+' + d;
-  }
-  function mkTgDeepLink(phoneE164){
-    const digits = String(phoneE164||'').replace(/\D/g,'');
-    return digits ? `https://t.me/${BOT_USERNAME}?start=bindp${digits}` : `https://t.me/${BOT_USERNAME}`;
-  }
-  function updateTgLink(){
-    const p = normalizePhoneLocal(phoneEl.value);
-    tgLinkEl.href = mkTgDeepLink(p);
   }
   updateChannelUI();
 
@@ -388,24 +373,20 @@
       const mskLabel = start.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
 
       let extra = '';
-      if (channel === 'telegram') {
-        if (data.tg && data.tg.needStart && data.tg.deepLink) {
-          extra = `<br><br>Чтобы получать уведомления в Telegram, откройте бота и нажмите Start: <a href="${data.tg.deepLink}" target="_blank" rel="noopener">@${BOT_USERNAME}</a>`;
-        } else {
-          extra = '<br><br>Уведомление отправлено в Telegram ✅';
-        }
-      } else if (channel === 'email') {
+      if (data.channel === 'telegram' && data.tme) {
+        extra = `<br><br><b>Важно:</b> чтобы получать напоминания в Telegram, <a href="${data.tme}" target="_blank" rel="noopener"><b>активируйте бота по этой ссылке</b></a>.`;
+      } else if (data.channel === 'email') {
         extra = `<br><br>Приглашение отправлено на <b>${email}</b>.`;
       }
 
-      showStatus(`Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).${extra}`, 'success', { stickyMs: 8000 });
+      showStatus(`Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).${extra}`, 'success', { stickyMs: 15000 });
 
       setTimeout(() => {
         e.target.reset();
         updateChannelUI();
         initDate();
         setTimeout(() => showStatus('', ''), 500);
-      }, 8200);
+      }, 15200);
 
     } catch (err) {
       console.error(err);
@@ -433,8 +414,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
