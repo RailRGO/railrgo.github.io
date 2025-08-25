@@ -94,6 +94,8 @@
     }
     .btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(99,102,241,.35)}
     .btn:disabled{opacity:.7; cursor:not-allowed}
+    .btn.ghost{ background:transparent; color:var(--text); border:1px solid var(--border); box-shadow:none }
+    .btn.tg{ background:#0088cc }
 
     .card{ background:var(--card); padding:24px; border-radius:16px; border:1px solid var(--border); box-shadow: var(--shadow) }
     section.card{ margin-top:16px }
@@ -135,6 +137,51 @@
 
     h1,h2{letter-spacing:.2px;margin:0 0 10px}
     footer{ text-align:center; color:var(--muted) }
+
+    /* layout формы с иллюстрацией */
+    .formCard{ display:grid; grid-template-columns: 1fr 1.2fr; gap:24px; align-items:stretch }
+    @media(max-width:900px){ .formCard{ grid-template-columns:1fr } }
+
+    .illus{
+      min-height:420px; border-radius:16px; border:1px solid var(--border);
+      background: radial-gradient(600px 300px at 80% -10%, rgba(99,102,241,.18), transparent 55%),
+                  radial-gradient(800px 400px at 0% 110%, rgba(37,99,235,.18), transparent 55%),
+                  var(--card);
+      position:relative; box-shadow:var(--shadow);
+    }
+    .sym{
+      position:absolute; font-weight:800; line-height:1;
+      background:linear-gradient(180deg,#7dd3fc,#8b5cf6);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,.25));
+      user-select:none; pointer-events:none;
+    }
+    .sym.pi{ font-size:180px; left:18%; top:10% }
+    .sym.pct{ font-size:140px; left:10%; bottom:18% }
+    .sym.mult{ font-size:160px; right:12%; bottom:10% }
+
+    .actions{ display:flex; align-items:center; gap:16px; margin-top:6px }
+    #status{ min-height:20px }
+
+    /* Карточка подтверждения */
+    .confirm{
+      grid-column: 1 / -1;
+      margin-top: 12px;
+      padding:20px; border-radius:16px; border:1px solid var(--border);
+      background: linear-gradient(135deg, rgba(16,185,129,.12), rgba(99,102,241,.12));
+      box-shadow: var(--shadow);
+    }
+    .confirm.hidden{ display:none }
+    .confirm-icon{ font-size:28px }
+    .confirm-title{ font-weight:800; font-size:20px; margin-top:8px }
+    .confirm-when{ font-weight:700; margin-top:4px }
+    .confirm-tags{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap }
+    .tag{
+      display:inline-block; padding:6px 10px; border-radius:999px; font-weight:700; font-size:13px;
+      border:1px solid var(--border); background: color-mix(in srgb, var(--card) 70%, transparent);
+    }
+    .confirm-note{ margin-top:10px; color:var(--muted) }
+    .confirm-actions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap }
   </style>
 </head>
 <body>
@@ -164,9 +211,16 @@
 
 <section id="schedule" class="padless">
   <h2 style="padding:0 20px">Запись на занятие</h2>
-  <div class="card">
+
+  <div class="card formCard">
+    <div class="illus" aria-hidden="true">
+      <span class="sym pi">π</span>
+      <span class="sym pct">%</span>
+      <span class="sym mult">×</span>
+    </div>
+
     <form id="bookingForm" class="grid" autocomplete="on">
-      <div class="two grid">
+      <div class="grid">
         <div>
           <label for="name">Имя</label>
           <input id="name" name="name" required placeholder="Иван Иванов">
@@ -177,47 +231,55 @@
         </div>
       </div>
 
-      <div class="two grid">
-        <div>
-          <label for="subject">Предмет</label>
-          <select id="subject" name="subject">
-            <option>Математика</option>
-            <option>Физика</option>
-          </select>
-        </div>
+      <div>
+        <label for="phone">Телефон для Telegram (+7…)</label>
+        <input id="phone" name="phone" type="tel" placeholder="+7 999 123-45-67">
+        <div class="muted">Заполните email и/или телефон. Если указан email — придёт приглашение на почту. Телефон пригодится для напоминаний в Telegram.</div>
+      </div>
+
+      <div>
+        <label for="subject">Предмет</label>
+        <select id="subject" name="subject">
+          <option>Математика</option>
+          <option>Физика</option>
+        </select>
+      </div>
+
+      <div class="grid two">
         <div>
           <label for="date">Дата (по Москве)</label>
           <input id="date" name="date" type="date" required>
           <div class="muted">Список времени ниже — по МСК.</div>
         </div>
-      </div>
-
-      <div>
-        <label for="time">Время слота (МСК)</label>
-        <select id="time" name="time" required disabled></select>
-        <div class="muted">Если слотов нет — выберите другую дату.</div>
-      </div>
-
-      <div class="two grid">
         <div>
-          <label for="channel">Куда прислать уведомление?</label>
-          <select id="channel" name="channel">
-            <option value="email">Email</option>
-            <option value="telegram">Telegram</option>
-          </select>
-        </div>
-        <div id="tgFields" class="hidden">
-          <label for="phone">Телефон для Telegram (+7…)</label>
-          <input id="phone" name="phone" type="tel" placeholder="+7 999 123-45-67">
-          <div class="muted">На этот номер придёт уведомление в Telegram.</div>
+          <label for="time">Время слота (МСК)</label>
+          <select id="time" name="time" required disabled></select>
+          <div class="muted">Если слотов нет — выберите другую дату.</div>
         </div>
       </div>
 
-      <div id="status" aria-live="polite"></div>
-      <div>
-        <button class="btn" type="submit">Проверить и записаться</button>
+      <div class="actions">
+        <button class="btn" type="submit">Записаться на занятие</button>
+        <div id="status" aria-live="polite"></div>
       </div>
     </form>
+
+    <!-- Персистентная карточка подтверждения -->
+    <div id="confirmCard" class="confirm hidden" role="status" aria-live="polite">
+      <div class="confirm-icon">✅</div>
+      <div class="confirm-title">Вы записаны!</div>
+      <div class="confirm-when" id="confirmWhen"></div>
+      <div class="confirm-tags">
+        <span class="tag" id="confirmSubject"></span>
+        <span class="tag">50 минут</span>
+      </div>
+      <div class="confirm-note" id="confirmNote"></div>
+      <div class="confirm-actions">
+        <a id="btnOpenTG" class="btn tg" target="_blank" rel="noopener">Открыть в Telegram</a>
+        <button id="btnCopyTG" class="btn ghost" type="button">Скопировать ссылку</button>
+        <button id="btnNew" class="btn ghost" type="button">Новая запись</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -225,7 +287,7 @@
   <h2 style="padding:0 20px">Контакты</h2>
   <div class="card">
     <p><a class="btn" style="background:#0088cc" href="https://t.me/aviation09" target="_blank" rel="noopener">Связаться в Telegram</a></p>
-    <p class="muted">Приглашение (если выбран Email) придёт на указанный адрес автоматически.</p>
+    <p class="muted">Приглашение (если указан Email) придёт автоматически.</p>
   </div>
 </section>
 
@@ -234,8 +296,8 @@
 </footer>
 
 <script>
-  // Текущий Web App URL (оканчивается на /exec)
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbyFnYoQgWVKHG4epkxfYF3Zs4K22INbSXcUexTPNEYEs9rjnPYLAM_YTm_kqakEK7mX/exec';
+  // URL Web App (оканчивается на /exec)
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzvFzQ7HxODs0P3jwOc7_2e-O12mR9Bmz_aXy6JI6zNdYjuv95bVZT5ZuXEk5d4joiOWw/exec';
 
   // Тема
   const themeBtn = document.getElementById('themeToggle');
@@ -262,14 +324,21 @@
     setTheme(current === 'dark' ? 'light' : 'dark');
   });
 
-  // Элементы формы
+  // Элементы формы/карточки
   const dateEl = document.getElementById('date');
   const timeEl = document.getElementById('time');
   const statusEl = document.getElementById('status');
   const emailEl = document.getElementById('email');
-  const channelEl = document.getElementById('channel');
-  const tgFields = document.getElementById('tgFields');
   const phoneEl = document.getElementById('phone');
+  const subjectEl = document.getElementById('subject');
+
+  const confirmCard = document.getElementById('confirmCard');
+  const confirmWhen = document.getElementById('confirmWhen');
+  const confirmSubject = document.getElementById('confirmSubject');
+  const confirmNote = document.getElementById('confirmNote');
+  const btnOpenTG = document.getElementById('btnOpenTG');
+  const btnCopyTG = document.getElementById('btnCopyTG');
+  const btnNew = document.getElementById('btnNew');
 
   let statusLockUntil = 0;
 
@@ -292,23 +361,6 @@
   }
 
   dateEl.addEventListener('change', populateTimes);
-  channelEl.addEventListener('change', updateChannelUI);
-
-  function updateChannelUI(){
-    const ch = channelEl.value;
-    const isTg = ch === 'telegram';
-    tgFields.classList.toggle('hidden', !isTg);
-    phoneEl.required = isTg;
-    emailEl.required = !isTg;
-  }
-  function normalizePhoneLocal(s){
-    const digits = String(s||'').replace(/\D/g,'');
-    if (!digits) return '';
-    let d = digits;
-    if (d.length === 11 && d.startsWith('8')) d = '7' + d.slice(1);
-    return '+' + d;
-  }
-  updateChannelUI();
 
   async function populateTimes() {
     timeEl.innerHTML = '';
@@ -340,25 +392,40 @@
     }
   }
 
+  // Нормализация телефона в +7…
+  function normalizePhoneLocal(s){
+    const digits = String(s||'').replace(/\D/g,'');
+    if (!digits) return '';
+    let d = digits;
+    if (d.length === 11 && d.startsWith('8')) d = '7' + d.slice(1);
+    return '+' + d;
+  }
+
+  // Сабмит формы
   document.getElementById('bookingForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     showLoading('Отправляем запрос…');
 
     const name = document.getElementById('name').value.trim();
     const email = emailEl.value.trim();
-    const subject = document.getElementById('subject').value.trim();
-    const startIso = document.getElementById('time').value;
-    const channel = channelEl.value;
     const phoneRaw = phoneEl.value.trim();
-    const phone = channel === 'telegram' ? normalizePhoneLocal(phoneRaw) : '';
+    const phone = normalizePhoneLocal(phoneRaw);
+    const subject = subjectEl.value.trim();
+    const startIso = timeEl.value;
 
     if (!startIso) { showStatus('Выберите время слота', 'error'); return; }
-    if (channel === 'email' && !email) { showStatus('Укажите email или выберите Telegram.', 'error'); return; }
-    if (channel === 'telegram' && !phone) { showStatus('Укажите телефон в формате +7… для Telegram.', 'error'); return; }
+    if (!email && !phone) { showStatus('Укажите email и/или телефон для Telegram.', 'error'); return; }
+
+    // Канал для бэкенда: если есть Email — шлём приглашение на почту, иначе Telegram
+    const channel = email ? 'email' : 'telegram';
 
     const payload = { name, email, subject, startIso, channel, phone };
     try {
-      const res = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
       const data = await res.json();
 
       if (!data.ok) {
@@ -367,32 +434,66 @@
       }
 
       const start = new Date(data.startIso);
-      const mskLabel = start.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+      const mskLabel = start.toLocaleString('ru-RU', {
+        timeZone: 'Europe/Moscow', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+      });
 
-      let extra = '';
-      if (data.channel === 'telegram' && data.tme) {
-        extra = `<br><br><b>Важно:</b> чтобы получать напоминания в Telegram, <a href="${data.tme}" target="_blank" rel="noopener"><b>активируйте бота по этой ссылке</b></a>.`;
-      } else if (data.channel === 'email') {
-        extra = `<br><br>Приглашение отправлено на <b>${email}</b>.`;
-        if (data.tme) {
-          extra += `<br><br><b>P. S.</b> Вы также можете получать напоминания в Telegram. Для этого <a href="${data.tme}" target="_blank" rel="noopener"><b>активируйте бота по этой ссылке</b></a>.`;
-        }
-      }
-
-      showStatus(`Готово! Вы записаны на <b>${mskLabel} МСК</b> (50 минут).${extra}`, 'success', { stickyMs: 15000 });
-
-      setTimeout(() => {
-        e.target.reset();
-        updateChannelUI();
-        initDate();
-        setTimeout(() => showStatus('', ''), 500);
-      }, 15200);
+      // Рендер персистентной карточки
+      renderConfirm({
+        when: mskLabel,
+        subject,
+        tme: data.tme || '',
+        channel: data.channel || channel,
+        email
+      });
 
     } catch (err) {
       console.error(err);
       showStatus('Не удалось отправить заявку. Проверьте интернет и попробуйте снова.', 'error');
     }
   });
+
+  function renderConfirm({ when, subject, tme, channel, email }){
+    confirmWhen.textContent = `${when} МСК`;
+    confirmSubject.textContent = subject || 'Занятие';
+
+    let note = '';
+    if (channel === 'email' && email) {
+      note = `Приглашение отправлено на ${email}.`;
+    } else {
+      note = `Мы напомним о занятии в Telegram.`;
+    }
+    note += tme ? ' Чтобы получать напоминания в Telegram — активируйте бота.' : '';
+    confirmNote.textContent = note;
+
+    if (tme) {
+      btnOpenTG.href = tme;
+      btnOpenTG.classList.remove('hidden');
+      btnCopyTG.onclick = () => {
+        navigator.clipboard.writeText(tme).then(()=>{
+          btnCopyTG.textContent='Ссылка скопирована';
+          setTimeout(()=>btnCopyTG.textContent='Скопировать ссылку',1800);
+        });
+      };
+      btnCopyTG.disabled = false;
+    } else {
+      btnOpenTG.removeAttribute('href');
+      btnOpenTG.classList.add('hidden');
+      btnCopyTG.onclick = null;
+      btnCopyTG.disabled = true;
+    }
+
+    btnNew.onclick = () => {
+      document.getElementById('bookingForm').reset();
+      populateTimes();
+      emailEl.focus();
+    };
+
+    confirmCard.classList.remove('hidden');
+    // Параллельно выведем короткий “успех” под кнопкой, но не скрываем карточку
+    showStatus('Бронирование создано.', 'success', { stickyMs: 15000 });
+  }
 
   function showLoading(text){
     if (Date.now() < statusLockUntil) return;
@@ -414,7 +515,3 @@
 </script>
 </body>
 </html>
-
-
-
-
