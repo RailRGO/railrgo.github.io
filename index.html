@@ -30,25 +30,18 @@
 
   <style>
     :root{
-      --bg:#f8fafc; --text:#0f172a; --muted:#475569; --card:#ffffff;
-      --accent:#6366f1; --border:#e5e7eb; --ring:rgba(99,102,241,0.2);
-      --shadow: 0 10px 30px rgba(2,6,23,0.08);
-      --btn-grad: linear-gradient(135deg, var(--accent), #8b5cf6);
-      color-scheme: light;
-    }
-    [data-theme="dark"]{
+      --wrap: 1140px; /* ширина секций увеличена */
       --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06);
       --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.5);
       --shadow: 0 12px 32px rgba(0,0,0,0.35);
+      --btn-grad: linear-gradient(135deg, #6366f1, #8b5cf6);
       color-scheme: dark;
     }
-    @media (prefers-color-scheme: dark){
-      :root:not([data-theme="light"]){
-        --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06);
-        --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.5);
-        --shadow: 0 12px 32px rgba(0,0,0,0.35);
-        color-scheme: dark;
-      }
+    [data-theme="light"]{
+      --bg:#f8fafc; --text:#0f172a; --muted:#475569; --card:#ffffff;
+      --border:#e5e7eb; --ring:rgba(99,102,241,0.2);
+      --shadow: 0 10px 30px rgba(2,6,23,0.08);
+      color-scheme: light;
     }
 
     *{box-sizing:border-box}
@@ -62,7 +55,7 @@
       transition: background-color .2s ease, color .2s ease;
     }
 
-    header,section,footer{max-width:960px;margin:0 auto;padding:20px}
+    header,section,footer{max-width:var(--wrap);margin:0 auto;padding:20px}
     .padless{padding-left:0; padding-right:0}
 
     header{
@@ -79,88 +72,80 @@
     .toggle{
       display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--border);
       border-radius:10px; background:var(--card); color:var(--text); cursor:pointer; font-weight:600;
-      box-shadow: var(--shadow); transition:filter .12s ease, transform .12s ease; user-select:none;
+      box-shadow: var(--shadow); transition:transform .12s ease;
     }
     .toggle:hover{transform:translateY(-1px)}
     .toggle svg{width:18px;height:18px}
 
     .btn{
       display:inline-flex; align-items:center; gap:8px;
-      background:var(--btn-grad);
-      color:#fff; padding:12px 18px; border-radius:12px; text-decoration:none !important; font-weight:700;
-      border:0; cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.25);
-      transition:transform .12s ease, box-shadow .12s ease;
-      font-size:16px; line-height:1;
+      background:var(--btn-grad); color:#fff; padding:12px 18px; border-radius:12px; text-decoration:none !important;
+      font-weight:700; border:0; cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.25);
+      transition:transform .12s ease, box-shadow .12s ease; font-size:16px; line-height:1;
     }
     .btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(99,102,241,.35)}
     .btn:disabled{opacity:.7; cursor:not-allowed}
     .btn.ghost{ background:transparent; color:var(--text); border:1px solid var(--border); box-shadow:none }
     .btn.tg{ background:#0088cc }
 
-    .card{ background:var(--card); padding:24px; border-radius:16px; border:1px solid var(--border); box-shadow: var(--shadow) }
+    .card{
+      background: linear-gradient(135deg, rgba(99,102,241,.10), rgba(16,185,129,.10)); /* градиент на форму */
+      padding:24px; border-radius:16px; border:1px solid var(--border); box-shadow: var(--shadow)
+    }
     section.card{ margin-top:16px }
 
     .grid{display:grid; gap:16px}
     .two{grid-template-columns:1fr 1fr}
-    @media(max-width:720px){.two{grid-template-columns:1fr}}
-
-    .hidden{display:none !important}
+    @media(max-width:820px){.two{grid-template-columns:1fr}}
 
     label{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
     input,select{
       width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:12px; color:var(--text);
-      background:var(--card); outline:none; transition:border-color .15s, box-shadow .15s
+      background:var(--card); outline:none; transition:border-color .15s, box-shadow .15s; font-size:15px;
     }
-    input:focus,select:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring)}
+    input:focus,select:focus{border-color:#7c83ff; box-shadow:0 0 0 6px var(--ring)}
     input::placeholder{ color:var(--muted); opacity:.9 }
 
+    /* Улучшенные селекты (контраст и опции в тёмной теме) */
     select{
       appearance:none; -webkit-appearance:none; -moz-appearance:none;
-      padding-right:40px;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%236366f1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
+      padding-right:40px; position:relative;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%23a5b4fc'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
       background-repeat:no-repeat; background-position:right 12px center; background-size:16px 16px;
     }
-    [data-theme="dark"] select{
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%239aa5b1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
+    [data-theme="light"] select{
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%236366f1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
     }
-    select option{ background-color:var(--card); color:var(--text) }
+    select option{ background-color:#111827; color:#e5e7eb } /* читабельность в тёмной теме */
+    [data-theme="light"] select option{ background-color:#fff; color:#0f172a }
     select:disabled{ opacity:.6; cursor:not-allowed }
 
     .muted{color:var(--muted);font-size:14px}
-
-    #status{margin-top:8px}
-    .success{background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px}
-    .error{background:#fee2e2;color:#991b1b;padding:12px;border-radius:12px}
     .loading{display:inline-flex; align-items:center; gap:10px; color:var(--muted); font-size:14px}
-    .spinner{width:16px; height:16px; border-radius:50%; border:2px solid var(--border); border-top-color:var(--accent); animation:spin .8s linear infinite}
+    .spinner{width:16px; height:16px; border-radius:50%; border:2px solid var(--border); border-top-color:#7c83ff; animation:spin .8s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
+
+    .success{background:#064e3b; color:#d1fae5; padding:12px; border-radius:12px}
+    [data-theme="light"] .success{ background:#ecfdf5; color:#065f46 }
+    .error{background:#7f1d1d; color:#fee2e2; padding:12px; border-radius:12px}
+    [data-theme="light"] .error{ background:#fee2e2; color:#991b1b }
 
     h1,h2{letter-spacing:.2px;margin:0 0 10px}
     footer{ text-align:center; color:var(--muted) }
 
-    /* layout формы с иллюстрацией */
-    .formCard{ display:grid; grid-template-columns: 1fr 1.2fr; gap:24px; align-items:stretch }
+    /* layout формы: картинка слева, форма справа */
+    .formCard{ display:grid; grid-template-columns: 1fr 1.05fr; gap:24px; align-items:stretch }
     @media(max-width:900px){ .formCard{ grid-template-columns:1fr } }
 
-    .illus{
-      min-height:420px; border-radius:16px; border:1px solid var(--border);
-      background: radial-gradient(600px 300px at 80% -10%, rgba(99,102,241,.18), transparent 55%),
-                  radial-gradient(800px 400px at 0% 110%, rgba(37,99,235,.18), transparent 55%),
-                  var(--card);
-      position:relative; box-shadow:var(--shadow);
+    .media{
+      min-height:460px;
+      background: none; /* без рамок и фрейма */
+      position:relative;
     }
-    .sym{
-      position:absolute; font-weight:800; line-height:1;
-      background:linear-gradient(180deg,#7dd3fc,#8b5cf6);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-      filter: drop-shadow(0 8px 24px rgba(0,0,0,.25));
-      user-select:none; pointer-events:none;
-    }
-    .sym.pi{ font-size:180px; left:18%; top:10% }
-    .sym.pct{ font-size:140px; left:10%; bottom:18% }
-    .sym.mult{ font-size:160px; right:12%; bottom:10% }
+    .media img{ width:100%; height:100%; object-fit:contain; display:block; }
 
-    .actions{ display:flex; align-items:center; gap:16px; margin-top:6px }
+    /* зона действий: кнопка по центру правой колонки */
+    .actions{ display:flex; align-items:center; justify-content:center; gap:16px; margin-top:6px }
     #status{ min-height:20px }
 
     /* Карточка подтверждения */
@@ -182,6 +167,11 @@
     }
     .confirm-note{ margin-top:10px; color:var(--muted) }
     .confirm-actions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap }
+
+    /* Мобилки: прячем левую картинку */
+    @media(max-width:820px){
+      .media{ display:none }
+    }
   </style>
 </head>
 <body>
@@ -195,15 +185,15 @@
         <path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36-1.42-1.42M7.05 7.05 5.64 5.64m12.02 0-1.41 1.41M7.05 16.95l-1.41 1.41"/>
         <circle cx="12" cy="12" r="4"/>
       </svg>
-      <span id="themeLabel">Тема</span>
+      <span id="themeLabel">Тёмная тема</span>
     </button>
   </nav>
 </header>
 
 <section class="card">
   <h1>Онлайн‑уроки по математике и физике</h1>
-  <p class="muted" style="max-width:720px">
-    Индивидуальные занятия по договорённости. Один урок — 50 минут.<br>
+  <p class="muted" style="max-width:760px">
+    Индивидуальные занятия по договорённости. Один урок — 50 минут.
     Свободные окна указаны по московскому времени (МСК).
   </p>
   <p><a class="btn" href="#schedule">Записаться</a></p>
@@ -213,28 +203,28 @@
   <h2 style="padding:0 20px">Запись на занятие</h2>
 
   <div class="card formCard">
-    <div class="illus" aria-hidden="true">
-      <span class="sym pi">π</span>
-      <span class="sym pct">%</span>
-      <span class="sym mult">×</span>
+    <!-- ЛЕВАЯ КАРТИНКА (PNG из GitHub Pages) -->
+    <div class="media" aria-hidden="true">
+      <img id="heroImg" src="https://railrgo.github.io/heroImg.png" alt="">
     </div>
 
+    <!-- ФОРМА -->
     <form id="bookingForm" class="grid" autocomplete="on">
-      <div class="grid">
+      <div class="two grid">
         <div>
           <label for="name">Имя</label>
           <input id="name" name="name" required placeholder="Иван Иванов">
         </div>
         <div>
           <label for="email">Email</label>
-          <input id="email" name="email" type="email" placeholder="name@example.com">
+          <input id="email" name="email" type="email" required placeholder="name@example.com">
         </div>
       </div>
 
       <div>
         <label for="phone">Телефон для Telegram (+7…)</label>
-        <input id="phone" name="phone" type="tel" placeholder="+7 999 123-45-67">
-        <div class="muted">Заполните email и/или телефон. Если указан email — придёт приглашение на почту. Телефон пригодится для напоминаний в Telegram.</div>
+        <input id="phone" name="phone" type="tel" required placeholder="+7 999 123-45-67">
+        <div class="muted">Email и Телефон обязательны — так мы быстрее свяжемся и пришлём напоминания.</div>
       </div>
 
       <div>
@@ -245,7 +235,7 @@
         </select>
       </div>
 
-      <div class="grid two">
+      <div class="two grid">
         <div>
           <label for="date">Дата (по Москве)</label>
           <input id="date" name="date" type="date" required>
@@ -260,8 +250,8 @@
 
       <div class="actions">
         <button class="btn" type="submit">Записаться на занятие</button>
-        <div id="status" aria-live="polite"></div>
       </div>
+      <div id="status" aria-live="polite"></div>
     </form>
 
     <!-- Персистентная карточка подтверждения -->
@@ -286,7 +276,7 @@
 <section id="contacts" class="padless">
   <h2 style="padding:0 20px">Контакты</h2>
   <div class="card">
-    <p><a class="btn" style="background:#0088cc" href="https://t.me/aviation09" target="_blank" rel="noopener">Связаться в Telegram</a></p>
+    <p><a class="btn tg" href="https://t.me/aviation09" target="_blank" rel="noopener">Связаться в Telegram</a></p>
     <p class="muted">Приглашение (если указан Email) придёт автоматически.</p>
   </div>
 </section>
@@ -296,7 +286,7 @@
 </footer>
 
 <script>
-  // URL Web App (оканчивается на /exec)
+  // Текущий Web App URL (оканчивается на /exec)
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbzvFzQ7HxODs0P3jwOc7_2e-O12mR9Bmz_aXy6JI6zNdYjuv95bVZT5ZuXEk5d4joiOWw/exec';
 
   // Тема
@@ -312,7 +302,7 @@
   function setTheme(mode){
     document.documentElement.setAttribute('data-theme', mode);
     localStorage.setItem('theme', mode);
-    const isDark = mode === 'dark';
+    const isDark = mode !== 'light';
     themeBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
     themeLabel.textContent = isDark ? 'Тёмная тема' : 'Светлая тема';
     themeBtn.querySelector('svg').innerHTML = isDark
@@ -320,8 +310,8 @@
       : '<path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36-1.42-1.42M7.05 7.05 5.64 5.64m12.02 0-1.41 1.41M7.05 16.95l-1.41 1.41"></path><circle cx="12" cy="12" r="4"></circle>';
   }
   themeBtn.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    setTheme(current === 'dark' ? 'light' : 'dark');
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'light' ? 'dark' : 'light');
   });
 
   // Элементы формы/карточки
@@ -414,10 +404,11 @@
     const startIso = timeEl.value;
 
     if (!startIso) { showStatus('Выберите время слота', 'error'); return; }
-    if (!email && !phone) { showStatus('Укажите email и/или телефон для Telegram.', 'error'); return; }
+    if (!email) { showStatus('Укажите email.', 'error'); return; }
+    if (!phone) { showStatus('Укажите телефон в формате +7…', 'error'); return; }
 
-    // Канал для бэкенда: если есть Email — шлём приглашение на почту, иначе Telegram
-    const channel = email ? 'email' : 'telegram';
+    // Канал для бэкенда: если есть Email — шлём приглашение на почту, но телефон тоже отправляем
+    const channel = 'email';
 
     const payload = { name, email, subject, startIso, channel, phone };
     try {
@@ -439,7 +430,7 @@
         hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
       });
 
-      // Рендер персистентной карточки
+      // Рендер карточки
       renderConfirm({
         when: mskLabel,
         subject,
@@ -458,12 +449,7 @@
     confirmWhen.textContent = `${when} МСК`;
     confirmSubject.textContent = subject || 'Занятие';
 
-    let note = '';
-    if (channel === 'email' && email) {
-      note = `Приглашение отправлено на ${email}.`;
-    } else {
-      note = `Мы напомним о занятии в Telegram.`;
-    }
+    let note = `Приглашение отправлено на ${email}.`;
     note += tme ? ' Чтобы получать напоминания в Telegram — активируйте бота.' : '';
     confirmNote.textContent = note;
 
@@ -491,7 +477,6 @@
     };
 
     confirmCard.classList.remove('hidden');
-    // Параллельно выведем короткий “успех” под кнопкой, но не скрываем карточку
     showStatus('Бронирование создано.', 'success', { stickyMs: 15000 });
   }
 
