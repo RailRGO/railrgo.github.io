@@ -13,7 +13,7 @@
     :root{
       --bg:#0b1020; --text:#e5e7eb; --muted:#a8b3c2;
       --card:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.16);
-      --accent:#6366f1; --accent-2:#8b5cf6;
+      --accent:#6366f1; --accent-2:#8b5cf6; --accent-g:#16a085;
       --chip:#121a2f; --chip-br:#2b3551; --chip-text:#eef2ff; --chip-meta:#aab3c6;
       --shadow: 0 10px 26px rgba(0,0,0,.35);
       color-scheme: dark;
@@ -21,43 +21,53 @@
     [data-theme="light"]{
       --bg:#f8fafc; --text:#0f172a; --muted:#475569;
       --card:#ffffff; --border:#e5e7eb;
-      --accent:#6366f1; --accent-2:#8b5cf6;
+      --accent:#6366f1; --accent-2:#8b5cf6; --accent-g:#10b981;
       --chip:#ffffff; --chip-br:#e5e7eb; --chip-text:#0f172a; --chip-meta:#64748b;
       --shadow: 0 8px 22px rgba(2,6,23,.08);
       color-scheme: light;
     }
+    html,body{height:100%}
     body{
       margin:0; padding:16px;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
+      color:var(--text); background: var(--bg); position: relative; overflow-x:hidden;
+    }
+    body::before{
+      content:""; position: fixed; inset:-40vh -40vw -40vh -40vw; z-index:-1; pointer-events:none;
       background:
-        radial-gradient(900px 500px at 110% -10%, rgba(99,102,241,.10), transparent 60%),
-        radial-gradient(700px 350px at -10% 110%, rgba(37,99,235,.10), transparent 60%),
-        var(--bg);
+        radial-gradient(60% 40% at 120% -10%, rgba(99,102,241,.12), transparent 60%),
+        radial-gradient(45% 30% at -10% 120%, rgba(16,185,129,.10), transparent 60%);
+      background-repeat:no-repeat; background-size: 100% 100%;
     }
     .wrap{ max-width:860px; margin:0 auto; }
     h2{ margin:0 0 6px; font-weight:800; letter-spacing:.2px }
     .muted{ color:var(--muted); font-size:13px }
 
     .tabs{ display:flex; gap:10px; margin:12px 0 14px }
-    .tab{ padding:8px 12px; border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--text); font-weight:700; cursor:pointer }
+    .tab{ padding:10px 14px; border:1px solid var(--border); border-radius:14px; background:var(--card); color:var(--text); font-weight:800; cursor:pointer }
     .tab.active{ outline:2px solid var(--accent) }
 
     .panel{
       background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(16,185,129,.08));
-      border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow: var(--shadow);
+      border:1px solid var(--border); border-radius:18px; padding:14px; box-shadow: var(--shadow);
     }
     .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
-    label{ font-size:14px; font-weight:700 }
+    label{ font-size:14px; font-weight:800 }
     input[type="date"]{ padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); outline:none }
     input[type="date"]:focus{ border-color:#7c83ff; box-shadow:0 0 0 6px rgba(99,102,241,.25) }
 
-    .subjects{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px }
+    .subjects{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:10px }
     .subj{
-      padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--card);
-      font-weight:700; cursor:pointer; color:var(--text)
+      padding:12px 14px; border-radius:16px; border:1px solid var(--chip-br);
+      background: var(--chip); color:var(--text); font-weight:800; cursor:pointer; text-align:center;
+      box-shadow: 0 4px 12px rgba(2,6,23,.12); transition: transform .08s ease, box-shadow .12s ease;
     }
-    .subj.active{ background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; border-color:transparent }
+    .subj:hover{ transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2,6,23,.16); }
+    .subj.active{
+      border-color:transparent;
+      background: linear-gradient(135deg, var(--accent), var(--accent-g));
+      color:#fff; box-shadow: 0 10px 22px rgba(99,102,241,.35);
+    }
 
     #slots{ display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px }
     .slot{
@@ -73,7 +83,7 @@
 
     .item{ border:1px solid var(--border); border-radius:16px; padding:12px 14px; background:var(--card) }
     .actions{ display:flex; gap:10px; margin-top:10px; flex-wrap:wrap }
-    .btn{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text); font-weight:700; cursor:pointer }
+    .btn{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text); font-weight:800; cursor:pointer }
     .btn.destructive{ border-color:#7f1d1d; color:#fecaca }
 
     .info{ padding:10px 12px; border-left:3px solid var(--accent); background:rgba(99,102,241,.10); border-radius:10px; margin:10px 0 }
@@ -125,15 +135,16 @@
   </div>
 
   <script>
-    const API = 'https://script.google.com/macros/s/AKfycbxg-HvVJjYQcPutC7OU7e_GUqDk0kDSNMuAMtToZKArppNeFesBy10UxGcdHOdwtB8oxw/exec';
-    const BOT_USERNAME = 'TutorAVVbot';
+    // УКАЖИТЕ ваш API (MiniApp API /exec) и имя бота
+    const API = 'https://script.google.com/macros/s/AKfycbwRDtYkF-GrK-2taGgeCuP-XD5P9HAm2EJ6dpa8o8UnX3_Ky6KMTrhPpbYBbKXyHFTTDw/exec';
+    const BOT_USERNAME = 'TutorAVVbot'; // без @
 
     // Telegram
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     const inTG = !!(tg && tg.initData);
     if (inTG) { tg.ready(); tg.expand(); }
 
-    // Тема из Telegram
+    // Тема
     if (inTG) {
       const dark = (tg.colorScheme || '').toLowerCase() !== 'light';
       document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
@@ -144,15 +155,12 @@
       if (tp.button_color) document.documentElement.style.setProperty('--accent', tp.button_color);
     }
 
-    // Fallback (браузер)
+    // Fallback
     const fallbackBox = document.getElementById('fallbackBox');
     const fallbackLink = document.getElementById('fallbackLink');
-    if (!inTG) {
-      fallbackBox.style.display = 'block';
-      fallbackLink.href = `https://t.me/${BOT_USERNAME}?startapp=open`;
-    }
+    if (!inTG) { fallbackBox.style.display = 'block'; fallbackLink.href = `https://t.me/${BOT_USERNAME}?startapp=open`; }
 
-    // Элементы
+    // Elements
     const userNote = document.getElementById('userNote');
     const tabBook = document.getElementById('tabBook');
     const tabMy = document.getElementById('tabMy');
@@ -167,7 +175,7 @@
     const slotsStatus = document.getElementById('slotsStatus');
     const myList = document.getElementById('myList');
 
-    // Пользователь
+    // User
     let user = null;
     if (inTG && tg.initDataUnsafe && tg.initDataUnsafe.user) {
       user = tg.initDataUnsafe.user;
@@ -175,12 +183,12 @@
       userNote.textContent = `${name}${user.username ? ' @'+user.username : ''} • MSK`;
     }
 
-    // Состояние
+    // State
     let selected = null;
     let rescheduleFrom = null;
     let selectedSubject = 'Математика';
 
-    // Навигация
+    // Tabs
     tabBook.onclick = () => switchTab('book');
     tabMy.onclick   = () => switchTab('my');
     function switchTab(which){
@@ -194,7 +202,7 @@
     const urlParams = new URLSearchParams(location.search);
     if (urlParams.get('tab') === 'my') switchTab('my');
 
-    // Дата по МСК
+    // Date (MSK)
     function mskTodayIso(){
       return new Intl.DateTimeFormat('en-CA', { timeZone:'Europe/Moscow', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
     }
@@ -209,17 +217,16 @@
       loadSlots(dateEl.value);
     });
 
-    // Предмет — чипы
+    // Subjects chips
     subjectsEl.addEventListener('click', (e) => {
       const btn = e.target.closest('.subj'); if (!btn) return;
       document.querySelectorAll('.subj').forEach(x => x.classList.remove('active'));
       btn.classList.add('active');
       selectedSubject = btn.dataset.value || 'Математика';
-      // обновим подписи у выбранного слота
       if (selected) selectSlot(document.querySelector('.slot.selected'), selected);
     });
 
-    // API helpers
+    // API
     async function apiGetSlots(dateISO){
       const r = await fetch(`${API}?action=slots&date=${encodeURIComponent(dateISO)}`);
       return r.json();
@@ -229,7 +236,7 @@
       return r.json();
     }
 
-    // Слоты
+    // Slots
     async function loadSlots(dateISO){
       slots.innerHTML = '';
       slotsStatus.style.display = '';
@@ -240,18 +247,12 @@
         slotsStatus.style.display = 'none';
         if (!res.ok) throw new Error(res.error||'Ошибка');
         const arr = res.slots || [];
-        if (!arr.length){
-          slots.innerHTML = `<div class="muted">На выбранную дату свободных слотов нет.</div>`;
-          return;
-        }
+        if (!arr.length){ slots.innerHTML = `<div class="muted">На выбранную дату свободных слотов нет.</div>`; return; }
         slots.innerHTML = '';
         arr.forEach(s => {
           const el = document.createElement('div');
           el.className = 'slot';
-          el.innerHTML = `
-            <div class="time">${s.start}–${s.end}</div>
-            <div class="meta">${s.duration || 50} мин${s.subject ? ` • ${s.subject}` : ''}</div>
-          `;
+          el.innerHTML = `<div class="time">${s.start}–${s.end}</div><div class="meta">${s.duration || 50} мин${s.subject ? ` • ${s.subject}` : ''}</div>`;
           el.onclick = () => selectSlot(el, s);
           slots.appendChild(el);
         });
@@ -261,9 +262,7 @@
     }
 
     function selectSlot(el, slot){
-      if (!el) {
-        el = [...document.querySelectorAll('.slot')].find(x => x.textContent.includes(`${slot.start}–${slot.end}`));
-      }
+      if (!el) el = [...document.querySelectorAll('.slot')].find(x => x.textContent.includes(`${slot.start}–${slot.end}`));
       document.querySelectorAll('.slot').forEach(x => x.classList.remove('selected'));
       if (el) el.classList.add('selected');
       selected = slot;
@@ -280,11 +279,8 @@
       tg.MainButton.showProgress();
       try{
         let res;
-        if (rescheduleFrom) {
-          res = await apiPost('reschedule', { initData: tg.initData, oldId: rescheduleFrom, newId: selected.id, subject: selectedSubject });
-        } else {
-          res = await apiPost('book', { initData: tg.initData, slotId: selected.id, subject: selectedSubject });
-        }
+        if (rescheduleFrom) res = await apiPost('reschedule', { initData: tg.initData, oldId: rescheduleFrom, newId: selected.id, subject: selectedSubject });
+        else               res = await apiPost('book', { initData: tg.initData, slotId: selected.id, subject: selectedSubject });
         tg.MainButton.hideProgress();
         if (res.ok){
           tg.HapticFeedback.notificationOccurred('success');
@@ -293,15 +289,14 @@
           await loadSlots(dateEl.value); switchTab('my');
         } else {
           tg.HapticFeedback.notificationOccurred('error');
-          tg.showAlert('Ошибка: ' + (res.error||''));
-        }
+          tg.showAlert('Ошибка: ' + (res.error||'')); }
       } catch(e){
         tg.MainButton.hideProgress();
         tg.showAlert('Сеть/сервер недоступны.');
       }
     });
 
-    // Мои записи
+    // My bookings
     async function loadMy(){
       myList.innerHTML = `<div class="loading"><span class="spinner"></span><span>Загружаем…</span></div>`;
       if (!inTG){ myList.innerHTML = `<div class="muted">Откройте из Telegram</div>`; return; }
@@ -315,15 +310,9 @@
           const box = document.createElement('div'); box.className = 'item';
           box.innerHTML = `<div><b>${fmtDate(b.date)}</b> ${b.start}–${b.end}${b.subject?` • ${b.subject}`:''}</div>`;
           const actions = document.createElement('div'); actions.className = 'actions';
-
-          const btnMove = document.createElement('button'); btnMove.className='btn'; btnMove.textContent='Перенести';
-          btnMove.onclick = () => startReschedule(b);
-
-          const btnCancel = document.createElement('button'); btnCancel.className='btn destructive'; btnCancel.textContent='Отменить';
-          btnCancel.onclick = () => confirmCancel(b.id);
-
-          actions.appendChild(btnMove); actions.appendChild(btnCancel);
-          box.appendChild(actions); myList.appendChild(box);
+          const btnMove = document.createElement('button'); btnMove.className='btn'; btnMove.textContent='Перенести'; btnMove.onclick = () => startReschedule(b);
+          const btnCancel = document.createElement('button'); btnCancel.className='btn destructive'; btnCancel.textContent='Отменить'; btnCancel.onclick = () => confirmCancel(b.id);
+          actions.appendChild(btnMove); actions.appendChild(btnCancel); box.appendChild(actions); myList.appendChild(box);
         });
       } catch(e){
         myList.innerHTML = `<div class="muted">Не удалось загрузить</div>`;
@@ -332,8 +321,7 @@
 
     function confirmCancel(slotId){
       if (!inTG) return;
-      tg.showPopup({
-        title:'Отмена записи', message:'Точно отменить?',
+      tg.showPopup({ title:'Отмена записи', message:'Точно отменить?',
         buttons:[{id:'yes', type:'destructive', text:'Отменить'}, {id:'no', type:'default', text:'Оставить'}]
       }, async id => {
         if (id!=='yes') return;
@@ -349,7 +337,6 @@
       reschedInfo.textContent = `Переносим: ${fmtDate(b.date)} ${b.start}–${b.end}. Выберите новый свободный слот.`;
       switchTab('book');
       if (inTG) tg.MainButton.hide();
-      // авто‑подставим предмет из брони, если есть
       const btn = [...document.querySelectorAll('.subj')].find(x => (x.dataset.value||'') === (b.subject||''));
       if (btn){ document.querySelectorAll('.subj').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); selectedSubject = b.subject; }
     }
