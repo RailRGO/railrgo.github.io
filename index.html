@@ -47,13 +47,26 @@
 
     *{box-sizing:border-box}
     html,body{height:100%}
+
+    /* Фон: единый фиксированный градиент без “плиток” */
     body{
       margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
-      background:
-        radial-gradient(900px 500px at 110% -10%, rgba(99,102,241,.10), transparent 60%),
-        radial-gradient(700px 350px at -10% 110%, rgba(37,99,235,.10), transparent 60%),
-        var(--bg);
+      background: var(--bg);
+      position: relative;
+      overflow-x: hidden;
       transition: background-color .2s ease, color .2s ease;
+    }
+    body::before{
+      content:"";
+      position: fixed;
+      inset:-40vh -40vw -40vh -40vw;
+      z-index:-1;
+      pointer-events:none;
+      background:
+        radial-gradient(60% 40% at 120% -10%, rgba(99,102,241,.12), transparent 60%),
+        radial-gradient(45% 30% at -10% 120%, rgba(37,99,235,.10), transparent 60%);
+      background-repeat:no-repeat;
+      background-size:100% 100%;
     }
 
     header,section,footer{max-width:var(--wrap);margin:0 auto;padding:20px}
@@ -90,7 +103,7 @@
     .btn.tg{ background:#0088cc }
 
     .card{
-      background: linear-gradient(135deg, rgba(99,102,241,.10), rgba(16,185,129,.10)); /* градиент на форму */
+      background: linear-gradient(135deg, rgba(99,102,241,.10), rgba(16,185,129,.10));
       padding:24px; border-radius:16px; border:1px solid var(--border); box-shadow: var(--shadow)
     }
     section.card{ margin-top:16px }
@@ -107,7 +120,6 @@
     input:focus,select:focus{border-color:#7c83ff; box-shadow:0 0 0 6px var(--ring)}
     input::placeholder{ color:var(--muted); opacity:.9 }
 
-    /* Улучшенные селекты (контраст и опции в тёмной теме) */
     select{
       appearance:none; -webkit-appearance:none; -moz-appearance:none;
       padding-right:40px; position:relative;
@@ -117,11 +129,13 @@
     [data-theme="light"] select{
       background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%236366f1'%3E%3Cpath d='M5.5 7.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
     }
-    select option{ background-color:#111827; color:#e5e7eb } /* читабельность в тёмной теме */
+    select option{ background-color:#111827; color:#e5e7eb }
     [data-theme="light"] select option{ background-color:#fff; color:#0f172a }
     select:disabled{ opacity:.6; cursor:not-allowed }
 
     .muted{color:var(--muted);font-size:14px}
+    .muted.form-note{ margin-top:6px; display:block } /* подпись под телефоном */
+
     .loading{display:inline-flex; align-items:center; gap:10px; color:var(--muted); font-size:14px}
     .spinner{width:16px; height:16px; border-radius:50%; border:2px solid var(--border); border-top-color:#7c83ff; animation:spin .8s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -134,22 +148,19 @@
     h1,h2{letter-spacing:.2px;margin:0 0 10px}
     footer{ text-align:center; color:var(--muted) }
 
-    /* layout формы: картинка слева, форма справа */
     .formCard{ display:grid; grid-template-columns: 1fr 1.05fr; gap:24px; align-items:stretch }
     @media(max-width:900px){ .formCard{ grid-template-columns:1fr } }
 
     .media{
       min-height:460px;
-      background: none; /* без рамок и фрейма */
+      background: none;
       position:relative;
     }
     .media img{ width:100%; height:100%; object-fit:contain; display:block; }
 
-    /* зона действий: кнопка по центру правой колонки */
     .actions{ display:flex; align-items:center; justify-content:center; gap:16px; margin-top:6px }
     #status{ min-height:20px }
 
-    /* Карточка подтверждения */
     .confirm{
       grid-column: 1 / -1;
       margin-top: 12px;
@@ -169,7 +180,6 @@
     .confirm-note{ margin-top:10px; color:var(--muted) }
     .confirm-actions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap }
 
-    /* Мобилки: прячем левую картинку */
     @media(max-width:820px){
       .media{ display:none }
     }
@@ -204,7 +214,6 @@
   <h2 style="padding:0 20px">Запись на занятие</h2>
 
   <div class="card formCard">
-    <!-- ЛЕВАЯ КАРТИНКА (PNG из GitHub Pages) -->
     <div class="media" aria-hidden="true">
       <img id="heroImg" src="https://railrgo.github.io/heroImg.png" alt="">
     </div>
@@ -213,8 +222,8 @@
     <form id="bookingForm" class="grid" autocomplete="on">
       <div class="two grid">
         <div>
-          <label for="name">Имя</label>
-          <input id="name" name="name" required placeholder="Иван Иванов">
+          <label for="name">Фамилия Имя</label>
+          <input id="name" name="name" required placeholder="Иванов Иван">
         </div>
         <div>
           <label for="email">Email</label>
@@ -223,9 +232,9 @@
       </div>
 
       <div>
-        <label for="phone">Телефон для Telegram (+7…)</label>
-        <input id="phone" name="phone" type="tel" required placeholder="+7 999 123-45-67">
-        <div class="muted">Email и Телефон обязательны — так мы быстрее свяжемся и пришлём напоминания.</div>
+        <label for="phone">Телефон</label>
+        <input id="phone" name="phone" type="tel" required placeholder="+7 999 123‑45‑67">
+        <div class="muted form-note">Телефон и e‑mail — для связи и напоминаний.</div>
       </div>
 
       <div>
@@ -238,7 +247,7 @@
 
       <div class="two grid">
         <div>
-          <label for="date">Дата (по Москве)</label>
+          <label for="date">Дата занятия</label>
           <input id="date" name="date" type="date" required>
           <div class="muted">Список времени ниже — по МСК.</div>
         </div>
@@ -408,9 +417,7 @@
     if (!email) { showStatus('Укажите email.', 'error'); return; }
     if (!phone) { showStatus('Укажите телефон в формате +7…', 'error'); return; }
 
-    // Канал для бэкенда: если есть Email — шлём приглашение на почту, но телефон тоже отправляем
     const channel = 'email';
-
     const payload = { name, email, subject, startIso, channel, phone };
     try {
       const res = await fetch(GAS_URL, {
@@ -431,7 +438,6 @@
         hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
       });
 
-      // Рендер карточки
       renderConfirm({
         when: mskLabel,
         subject,
@@ -501,4 +507,3 @@
 </script>
 </body>
 </html>
-
