@@ -143,7 +143,7 @@
   </div>
 
   <script>
-    const API = 'https://script.google.com/macros/s/AKfycbydStoQPt3X4jtsnJpdRgByO5XBa_AqpzaD_zA6KerBgAshPwMSoQ_Jw2cb-937rdpp7g/exec';
+    const API = 'https://script.google.com/macros/s/AKfycbw3oMYurc-lF3hhTuyx0UW0zfiNS2Iz5Ny2-MOaQbQfCmeiZiipPNq573J80ywqX1H4Xg/exec';
     const BOT_USERNAME = 'TutorAVVbot';
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -280,7 +280,7 @@
         tg.MainButton.hideProgress();
         if (res.ok){
           tg.HapticFeedback.notificationOccurred('success');
-          tg.showAlert(rescheduleFrom ? 'Перенос выполнен. Обновлённый .ics отправлен.' : 'Запись подтверждена. .ics отправлен.');
+          tg.showAlert(rescheduleFrom ? 'Перенос выполнен' : 'Запись подтверждена');
           rescheduleFrom = null; reschedInfo.style.display = 'none'; selected = null;
           await loadSlots(dateEl.value); switchTab('my');
         } else {
@@ -345,5 +345,6 @@
   </script>
 </body>
 </html>
+
 
 
