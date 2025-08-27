@@ -143,7 +143,7 @@
   </div>
 
   <script>
-    const API = 'https://script.google.com/macros/s/AKfycbwdUCz7Y5U1AaFMZakaZdNzoYUdTvmNsnK0gO4tWelLArN_4nkev0mDOWyZTlfsBhTSjw/exec';
+    const API = 'https://script.google.com/macros/s/AKfycbydStoQPt3X4jtsnJpdRgByO5XBa_AqpzaD_zA6KerBgAshPwMSoQ_Jw2cb-937rdpp7g/exec';
     const BOT_USERNAME = 'TutorAVVbot';
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -341,10 +341,9 @@
       return new Date(Date.UTC(y,m-1,d,0,0,0)).toLocaleDateString('ru-RU',{ timeZone:'Europe/Moscow', day:'2-digit', month:'long' });
     }
 
-    function escapeHtml_(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
     loadSlots(dateEl.value);
   </script>
 </body>
 </html>
+
 
