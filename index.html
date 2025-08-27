@@ -31,7 +31,7 @@
 
   <style>
     :root{
-      --wrap: 1140px; /* ширина секций увеличена */
+      --wrap: 1140px;
       --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1; --card:rgba(255,255,255,0.06);
       --border:rgba(255,255,255,0.12); --ring:rgba(99,102,241,0.5);
       --shadow: 0 12px 32px rgba(0,0,0,0.35);
@@ -134,7 +134,7 @@
     select:disabled{ opacity:.6; cursor:not-allowed }
 
     .muted{color:var(--muted);font-size:14px}
-    .muted.form-note{ margin-top:6px; display:block } /* подпись под телефоном */
+    .muted.form-note{ margin-top:6px; display:block }
 
     .loading{display:inline-flex; align-items:center; gap:10px; color:var(--muted); font-size:14px}
     .spinner{width:16px; height:16px; border-radius:50%; border:2px solid var(--border); border-top-color:#7c83ff; animation:spin .8s linear infinite}
@@ -204,8 +204,9 @@
 <section class="card">
   <h1>Онлайн‑уроки по математике и физике</h1>
   <p class="muted" style="max-width:760px">
-    Индивидуальные занятия по договорённости. Один урок — 50 минут.
-    Свободные окна указаны по московскому времени (МСК).
+    Математика и физика без пробелов<br>
+    Помогаю подтянуть оценки, разобраться в сложных темах и полюбить предметы.<br>
+    Индивидуальные занятия для 4 – 9 классов, урок — 50 минут.
   </p>
   <p><a class="btn" href="#schedule">Записаться</a></p>
 </section>
@@ -249,12 +250,11 @@
         <div>
           <label for="date">Дата занятия</label>
           <input id="date" name="date" type="date" required>
-          <div class="muted">Список времени ниже — по МСК.</div>
         </div>
         <div>
           <label for="time">Время слота (МСК)</label>
           <select id="time" name="time" required disabled></select>
-          <div class="muted">Если слотов нет — выберите другую дату.</div>
+          <div class="muted">Нет слотов — выберите другую дату.</div>
         </div>
       </div>
 
