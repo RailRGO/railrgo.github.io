@@ -72,6 +72,27 @@
       color:#fff; box-shadow: 0 10px 22px rgba(99,102,241,.35);
     }
 
+    /* Мои записи — всегда одна колонка вниз */
+    #secMy #myList{
+      display: flex;
+      flex-direction: column;
+      gap: 14px;          /* расстояние между карточками */
+    }
+    
+    /* Карточка записи на всю ширину контейнера */
+    #secMy #myList .item{
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Кнопки внутри карточки — в строку, не ломаемся */
+    #secMy #myList .actions{
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+        
     /* Слоты — светлые карточки как на сайте */
     #slots{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px }
     .slot{
@@ -345,6 +366,7 @@
   </script>
 </body>
 </html>
+
 
 
 
