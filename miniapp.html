@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Онлайн‑уроки — Mini App</title>
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{
+      --bg:#0b1020; --text:#e5e7eb; --muted:#9aa5b1;
+      --card:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12);
+      --ring:rgba(99,102,241,0.35); --accent:#6366f1; --accent-2:#8b5cf6;
+      --chip:#12172b; --chip-br:#263149;
+      color-scheme: dark;
+    }
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
+      background:
+        radial-gradient(900px 500px at 110% -10%, rgba(99,102,241,.10), transparent 60%),
+        radial-gradient(700px 350px at -10% 110%, rgba(37,99,235,.10), transparent 60%),
+        var(--bg);
+    }
+    .wrap{max-width:880px; margin:0 auto; padding:18px}
+    h1{margin:0 0 10px; font-size:24px; font-weight:800; letter-spacing:.2px}
+    .muted{color:var(--muted); font-size:14px}
+
+    .tabs{ display:flex; gap:10px; margin:12px 0 16px }
+    .tab{ padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); cursor:pointer; font-weight:700 }
+    .tab.active{ outline:2px solid var(--accent) }
+
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+    label{ font-weight:600; font-size:14px }
+    input[type="date"]{
+      padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text);
+      outline:none; transition:border-color .15s, box-shadow .15s; font-size:15px;
+    }
+    input[type="date"]:focus{ border-color:#7c83ff; box-shadow:0 0 0 6px var(--ring) }
+
+    .grid{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px }
+    @media(max-width:560px){ .grid{ grid-template-columns: 1fr } }
+
+    .slot{ padding:14px; text-align:center; border:1px solid var(--chip-br); background:var(--chip); border-radius:12px; cursor:pointer; font-weight:700 }
+    .slot small{ display:block; color:var(--muted); font-weight:600 }
+    .slot.selected{ outline:2px solid var(--accent) }
+
+    .card{ background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(16,185,129,.08));
+           border:1px solid var(--border); border-radius:16px; padding:16px; margin-top:14px }
+
+    .item{ border:1px solid var(--border); border-radius:12px; padding:12px; background:var(--card) }
+    .actions{ display:flex; gap:10px; margin-top:10px; flex-wrap:wrap }
+    .btn{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--text); font-weight:700; cursor:pointer }
+    .btn.destructive{ border-color:#7f1d1d; color:#fecaca }
+    .info{ padding:10px 12px; border-left:3px solid var(--accent); background:rgba(99,102,241,.08); border-radius:8px; margin:10px 0 }
+
+    .loading{ display:inline-flex; align-items:center; gap:10px; color:var(--muted) }
+    .spinner{ width:16px; height:16px; border-radius:50%; border:2px solid var(--border); border-top-color:#7c83ff; animation: spin .8s linear infinite }
+    @keyframes spin{ to{ transform:rotate(360deg) } }
+
+    /* Fallback панель, если страница открыта НЕ в Telegram */
+    .fallback{ position:fixed; inset:auto 12px 12px 12px; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; display:none }
+    .fallback a{ display:inline-block; margin-top:6px; font-weight:800; color:#b9c2ff; text-decoration:none }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Запись на урок</h1>
+    <div class="muted" id="userNote">Откройте в Telegram, чтобы авторизоваться</div>
+
+    <div class="tabs">
+      <button class="tab active" id="tabBook">Записаться</button>
+      <button class="tab" id="tabMy">Мои записи</button>
+    </div>
+
+    <div id="reschedInfo" class="info" style="display:none;"></div>
+
+    <section id="secBook" class="card">
+      <div class="row">
+        <label for="date">Дата (МСК):</label>
+        <input id="date" type="date" />
+      </div>
+      <div id="slotsWrap" style="margin-top:12px">
+        <div id="slotsStatus" class="loading"><span class="spinner"></span><span>Загружаем слоты…</span></div>
+        <div id="slots" class="grid" style="margin-top:8px"></div>
+      </div>
+    </section>
+
+    <section id="secMy" class="card" style="display:none;">
+      <div id="myList" class="loading"><span class="spinner"></span><span>Загружаем…</span></div>
+    </section>
+  </div>
+
+  <div class="fallback" id="fallbackBox">
+    <div>Эта страница — мини‑приложение Telegram. Откройте её из бота, чтобы авторизоваться и записаться.</div>
+    <a id="fallbackLink" href="#" target="_blank" rel="noopener">Открыть в боте</a>
+  </div>
+
+  <script>
+    // URL вашего GAS (тот, где Mini App API из нашего скрипта)
+    const API = 'PASTE_YOUR_GAS_EXEC_URL_HERE'; // например: https://script.google.com/macros/s/AKfyc.../exec
+    const BOT_USERNAME = 'TutorAVVbot'; // без @
+
+    // Инициализация Telegram API
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    const inTG = !!(tg && tg.initData);
+    if (inTG) { tg.ready(); tg.expand(); }
+
+    // Тема — слегка подстраиваемся под Telegram
+    if (inTG && tg.themeParams) {
+      const tp = tg.themeParams;
+      if (tp.bg_color) document.documentElement.style.setProperty('--bg', tp.bg_color);
+      if (tp.text_color) document.documentElement.style.setProperty('--text', tp.text_color);
+      if (tp.hint_color) document.documentElement.style.setProperty('--muted', tp.hint_color);
+      if (tp.button_color) document.documentElement.style.setProperty('--accent', tp.button_color);
+    }
+
+    // Фолбэк, если открыли не из Telegram
+    const fallbackBox = document.getElementById('fallbackBox');
+    const fallbackLink = document.getElementById('fallbackLink');
+    if (!inTG) {
+      fallbackBox.style.display = 'block';
+      fallbackLink.href = `https://t.me/${BOT_USERNAME}?startapp=open`;
+    }
+
+    // Элементы
+    const tabBook = document.getElementById('tabBook');
+    const tabMy = document.getElementById('tabMy');
+    const secBook = document.getElementById('secBook');
+    const secMy = document.getElementById('secMy');
+    const reschedInfo = document.getElementById('reschedInfo');
+
+    const dateEl = document.getElementById('date');
+    const slots = document.getElementById('slots');
+    const slotsStatus = document.getElementById('slotsStatus');
+    const myList = document.getElementById('myList');
+    const userNote = document.getElementById('userNote');
+
+    // Пользователь
+    let user = null;
+    if (inTG && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      user = tg.initDataUnsafe.user;
+      const name = [user.first_name, user.last_name].filter(Boolean).join(' ');
+      userNote.textContent = `${name}${user.username ? ' @'+user.username : ''} • MSK`;
+    }
+
+    // Состояние
+    let selected = null;
+    let rescheduleFrom = null;
+
+    tabBook.onclick = () => switchTab('book');
+    tabMy.onclick   = () => switchTab('my');
+
+    function switchTab(which){
+      tabBook.classList.toggle('active', which==='book');
+      tabMy.classList.toggle('active',   which==='my');
+      secBook.style.display = which==='book' ? '' : 'none';
+      secMy.style.display   = which==='my' ? '' : 'none';
+      if (inTG) tg.MainButton.hide();
+      if (which==='my') loadMy();
+    }
+
+    // Дата по МСК
+    function mskTodayIso(){
+      return new Intl.DateTimeFormat('en-CA', { timeZone:'Europe/Moscow', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
+    }
+    dateEl.value = mskTodayIso();
+    dateEl.addEventListener('change', () => loadSlots(dateEl.value));
+
+    // API helpers
+    async function apiGetSlots(dateISO){
+      const r = await fetch(`${API}?action=slots&date=${encodeURIComponent(dateISO)}`);
+      return r.json();
+    }
+    async function apiPost(action, obj){
+      const r = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action, ...obj }) });
+      return r.json();
+    }
+
+    // Слоты
+    async function loadSlots(dateISO){
+      slots.innerHTML = '';
+      slotsStatus.style.display = '';
+      selected = null; if (inTG) tg.MainButton.hide();
+
+      try{
+        const res = await apiGetSlots(dateISO);
+        slotsStatus.style.display = 'none';
+        if (!res.ok) throw new Error(res.error||'Ошибка');
+        if (!res.slots || !res.slots.length){
+          slots.innerHTML = `<div class="muted">На выбранную дату свободных слотов нет.</div>`;
+          return;
+        }
+        slots.innerHTML = '';
+        for (const s of res.slots){
+          const el = document.createElement('div');
+          el.className = 'slot';
+          el.innerHTML = `${s.start}–${s.end}${s.subject ? `<small>${s.subject}</small>`:''}`;
+          el.onclick = () => selectSlot(el, s);
+          slots.appendChild(el);
+        }
+      } catch(e){
+        slotsStatus.innerHTML = `<span class="muted">Не удалось загрузить слоты</span>`;
+      }
+    }
+
+    function selectSlot(el, slot){
+      [...document.querySelectorAll('.slot')].forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      selected = slot;
+      if (inTG){
+        tg.MainButton.setText(rescheduleFrom
+          ? `Перенести на ${slot.date} ${slot.start}–${slot.end}`
+          : `Записаться: ${slot.date} ${slot.start}–${slot.end}`);
+        tg.MainButton.show();
+      }
+    }
+
+    if (inTG) tg.MainButton.onClick(async () => {
+      if (!selected) return;
+      tg.MainButton.showProgress();
+      try{
+        let res;
+        if (rescheduleFrom) {
+          res = await apiPost('reschedule', { initData: tg.initData, oldId: rescheduleFrom, newId: selected.id });
+        } else {
+          res = await apiPost('book', { initData: tg.initData, slotId: selected.id });
+        }
+        tg.MainButton.hideProgress();
+        if (res.ok){
+          tg.HapticFeedback.notificationOccurred('success');
+          tg.showAlert(rescheduleFrom ? 'Перенос выполнен. Обновлённый .ics отправлен.' : 'Запись подтверждена. .ics отправлен.');
+          rescheduleFrom = null; reschedInfo.style.display = 'none'; selected = null;
+          await loadSlots(dateEl.value);
+          switchTab('my');
+        } else {
+          tg.HapticFeedback.notificationOccurred('error');
+          tg.showAlert('Ошибка: ' + (res.error||''));
+        }
+      } catch(e){
+        tg.MainButton.hideProgress();
+        tg.showAlert('Сеть/сервер недоступны.');
+      }
+    });
+
+    // Мои записи
+    async function loadMy(){
+      myList.innerHTML = `<div class="loading"><span class="spinner"></span><span>Загружаем…</span></div>`;
+      if (!inTG){ myList.innerHTML = `<div class="muted">Откройте из Telegram</div>`; return; }
+      try{
+        const res = await apiPost('my', { initData: tg.initData });
+        if (!res.ok) throw new Error(res.error||'');
+        const arr = res.bookings || [];
+        if (!arr.length){ myList.innerHTML = `<div class="muted">Ближайших записей нет.</div>`; return; }
+        myList.innerHTML = '';
+        arr.forEach(b => {
+          const box = document.createElement('div'); box.className = 'item';
+          box.innerHTML = `<div><b>${fmtDate(b.date)}</b> ${b.start}–${b.end}${b.subject?` • ${b.subject}`:''}</div>`;
+          const actions = document.createElement('div'); actions.className = 'actions';
+
+          const btnMove = document.createElement('button'); btnMove.className='btn'; btnMove.textContent='Перенести';
+          btnMove.onclick = () => startReschedule(b);
+
+          const btnCancel = document.createElement('button'); btnCancel.className='btn destructive'; btnCancel.textContent='Отменить';
+          btnCancel.onclick = () => confirmCancel(b.id);
+
+          actions.appendChild(btnMove); actions.appendChild(btnCancel);
+          box.appendChild(actions); myList.appendChild(box);
+        });
+      } catch(e){
+        myList.innerHTML = `<div class="muted">Не удалось загрузить</div>`;
+      }
+    }
+
+    function confirmCancel(slotId){
+      if (!inTG) return;
+      tg.showPopup({
+        title:'Отмена записи', message:'Точно отменить?',
+        buttons:[{id:'yes', type:'destructive', text:'Отменить'}, {id:'no', type:'default', text:'Оставить'}]
+      }, async id => {
+        if (id!=='yes') return;
+        const res = await apiPost('cancel', { initData: tg.initData, slotId });
+        if (res.ok){ tg.HapticFeedback.notificationOccurred('success'); loadMy(); loadSlots(dateEl.value); }
+        else { tg.HapticFeedback.notificationOccurred('error'); tg.showAlert('Ошибка: ' + (res.error||'')); }
+      });
+    }
+
+    function startReschedule(b){
+      rescheduleFrom = b.id;
+      reschedInfo.style.display = '';
+      reschedInfo.textContent = `Переносим: ${fmtDate(b.date)} ${b.start}–${b.end}. Выберите новый свободный слот.`;
+      switchTab('book');
+      if (inTG) tg.MainButton.hide();
+    }
+
+    function fmtDate(ymd){
+      const [y,m,d]=ymd.split('-').map(Number);
+      const dt = new Date(Date.UTC(y,m-1,d,0,0,0));
+      return dt.toLocaleDateString('ru-RU', { timeZone:'Europe/Moscow', day:'2-digit', month:'long' });
+    }
+
+    // Первый загрузочный вызов
+    loadSlots(dateEl.value);
+  </script>
+</body>
+</html>
