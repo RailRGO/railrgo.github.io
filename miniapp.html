@@ -14,8 +14,7 @@
       --bg:#0b1020; --text:#e5e7eb; --muted:#a8b3c2;
       --card:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.16);
       --accent:#6366f1; --accent-2:#8b5cf6;
-      --chip:#121a2f; --chip-br:#2b3551; --chip-text:#eef2ff;
-      --chip-meta:#aab3c6;
+      --chip:#121a2f; --chip-br:#2b3551; --chip-text:#eef2ff; --chip-meta:#aab3c6;
       --shadow: 0 10px 26px rgba(0,0,0,.35);
       color-scheme: dark;
     }
@@ -23,12 +22,10 @@
       --bg:#f8fafc; --text:#0f172a; --muted:#475569;
       --card:#ffffff; --border:#e5e7eb;
       --accent:#6366f1; --accent-2:#8b5cf6;
-      --chip:#ffffff; --chip-br:#e5e7eb; --chip-text:#0f172a;
-      --chip-meta:#64748b;
+      --chip:#ffffff; --chip-br:#e5e7eb; --chip-text:#0f172a; --chip-meta:#64748b;
       --shadow: 0 8px 22px rgba(2,6,23,.08);
       color-scheme: light;
     }
-
     body{
       margin:0; padding:16px;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -38,54 +35,40 @@
         radial-gradient(700px 350px at -10% 110%, rgba(37,99,235,.10), transparent 60%),
         var(--bg);
     }
-
     .wrap{ max-width:860px; margin:0 auto; }
     h2{ margin:0 0 6px; font-weight:800; letter-spacing:.2px }
     .muted{ color:var(--muted); font-size:13px }
 
     .tabs{ display:flex; gap:10px; margin:12px 0 14px }
-    .tab{
-      padding:8px 12px; border:1px solid var(--border); border-radius:12px;
-      background:var(--card); color:var(--text); font-weight:700; cursor:pointer;
-    }
+    .tab{ padding:8px 12px; border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--text); font-weight:700; cursor:pointer }
     .tab.active{ outline:2px solid var(--accent) }
 
     .panel{
       background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(16,185,129,.08));
-      border:1px solid var(--border);
-      border-radius:16px; padding:14px; box-shadow: var(--shadow);
+      border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow: var(--shadow);
     }
-
     .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
     label{ font-size:14px; font-weight:700 }
-    input[type="date"]{
-      padding:10px 12px; border-radius:12px; border:1px solid var(--border);
-      background:var(--card); color:var(--text); outline:none;
-    }
+    input[type="date"]{ padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); outline:none }
     input[type="date"]:focus{ border-color:#7c83ff; box-shadow:0 0 0 6px rgba(99,102,241,.25) }
 
-    #slots{ display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px }
+    .subjects{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px }
+    .subj{
+      padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--card);
+      font-weight:700; cursor:pointer; color:var(--text)
+    }
+    .subj.active{ background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; border-color:transparent }
 
+    #slots{ display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px }
     .slot{
-      display:flex; flex-direction:column; gap:4px;
-      padding:14px 16px;
-      background: var(--chip);
-      border:1px solid var(--chip-br);
-      border-radius:16px;
-      cursor:pointer;
-      box-shadow: 0 4px 12px rgba(2,6,23,.12);
-      transition: transform .08s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
+      display:flex; flex-direction:column; gap:4px; padding:14px 16px;
+      background: var(--chip); border:1px solid var(--chip-br); border-radius:16px; cursor:pointer;
+      box-shadow: 0 4px 12px rgba(2,6,23,.12); transition: transform .08s ease, box-shadow .12s ease, border-color .12s ease, background-color .12s ease;
     }
     .slot:hover{ transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2,6,23,.16); }
     .slot .time{ font-size:18px; font-weight:800; letter-spacing:.2px; color:var(--chip-text) }
     .slot .meta{ font-size:13px; color:var(--chip-meta); font-weight:600 }
-
-    .slot.selected{
-      border-color: transparent;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color:#fff;
-      box-shadow: 0 10px 22px rgba(99,102,241,.35);
-    }
+    .slot.selected{ border-color: transparent; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; box-shadow: 0 10px 22px rgba(99,102,241,.35) }
     .slot.selected .time, .slot.selected .meta{ color:#fff }
 
     .item{ border:1px solid var(--border); border-radius:16px; padding:12px 14px; background:var(--card) }
@@ -98,11 +81,7 @@
     .spinner{ width:16px; height:16px; border-radius:50%; border:2px solid var(--border); border-top-color:#7c83ff; animation:spin .8s linear infinite }
     @keyframes spin{ to{ transform:rotate(360deg) } }
 
-    /* Fallback, если открыто не в Telegram */
-    .fallback{
-      position:fixed; left:12px; right:12px; bottom:12px;
-      background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; display:none
-    }
+    .fallback{ position:fixed; left:12px; right:12px; bottom:12px; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; display:none }
     .fallback a{ font-weight:800; color:#b9c2ff; text-decoration:none; display:inline-block; margin-top:6px }
   </style>
 </head>
@@ -123,6 +102,12 @@
         <label for="date" id="dateLabel">Дата (МСК):</label>
         <input id="date" type="date" />
       </div>
+
+      <div class="subjects" id="subjects">
+        <button class="subj active" data-value="Математика">Математика</button>
+        <button class="subj" data-value="Физика">Физика</button>
+      </div>
+
       <div id="slotsWrap" style="margin-top:10px">
         <div id="slotsStatus" class="loading"><span class="spinner"></span><span>Загружаем слоты…</span></div>
         <div id="slots"></div>
@@ -140,9 +125,8 @@
   </div>
 
   <script>
-    // ВАЖНО: укажите ваш API (MiniApp API /exec)
-    const API = 'https://script.google.com/macros/s/AKfycbzPMP97ad_aDMSC-VdFwfSd5dzS7V6OjRNtyjP4INhul4J1gdJBfC-y5phRQZi0Tuta7w/exec';
-    const BOT_USERNAME = 'TutorAVVbot'; // без @
+    const API = 'https://script.google.com/macros/s/AKfycbxg-HvVJjYQcPutC7OU7e_GUqDk0kDSNMuAMtToZKArppNeFesBy10UxGcdHOdwtB8oxw/exec';
+    const BOT_USERNAME = 'TutorAVVbot';
 
     // Telegram
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -160,7 +144,7 @@
       if (tp.button_color) document.documentElement.style.setProperty('--accent', tp.button_color);
     }
 
-    // Fallback
+    // Fallback (браузер)
     const fallbackBox = document.getElementById('fallbackBox');
     const fallbackLink = document.getElementById('fallbackLink');
     if (!inTG) {
@@ -178,6 +162,7 @@
 
     const dateEl = document.getElementById('date');
     const dateLabel = document.getElementById('dateLabel');
+    const subjectsEl = document.getElementById('subjects');
     const slots = document.getElementById('slots');
     const slotsStatus = document.getElementById('slotsStatus');
     const myList = document.getElementById('myList');
@@ -193,11 +178,11 @@
     // Состояние
     let selected = null;
     let rescheduleFrom = null;
+    let selectedSubject = 'Математика';
 
     // Навигация
     tabBook.onclick = () => switchTab('book');
     tabMy.onclick   = () => switchTab('my');
-
     function switchTab(which){
       tabBook.classList.toggle('active', which==='book');
       tabMy.classList.toggle('active',   which==='my');
@@ -206,8 +191,6 @@
       if (inTG) tg.MainButton.hide();
       if (which==='my') loadMy();
     }
-
-    // URL-параметр tab
     const urlParams = new URLSearchParams(location.search);
     if (urlParams.get('tab') === 'my') switchTab('my');
 
@@ -224,6 +207,16 @@
     dateEl.addEventListener('change', () => {
       dateLabel.textContent = `Дата (МСК): ${ruDateLabel(dateEl.value)}`;
       loadSlots(dateEl.value);
+    });
+
+    // Предмет — чипы
+    subjectsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.subj'); if (!btn) return;
+      document.querySelectorAll('.subj').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+      selectedSubject = btn.dataset.value || 'Математика';
+      // обновим подписи у выбранного слота
+      if (selected) selectSlot(document.querySelector('.slot.selected'), selected);
     });
 
     // API helpers
@@ -268,13 +261,16 @@
     }
 
     function selectSlot(el, slot){
-      [...document.querySelectorAll('.slot')].forEach(x => x.classList.remove('selected'));
-      el.classList.add('selected');
+      if (!el) {
+        el = [...document.querySelectorAll('.slot')].find(x => x.textContent.includes(`${slot.start}–${slot.end}`));
+      }
+      document.querySelectorAll('.slot').forEach(x => x.classList.remove('selected'));
+      if (el) el.classList.add('selected');
       selected = slot;
       if (inTG){
         tg.MainButton.setText(rescheduleFrom
-          ? `Перенести на ${slot.date} ${slot.start}–${slot.end}`
-          : `Записаться: ${slot.date} ${slot.start}–${slot.end}`);
+          ? `Перенести на ${slot.date} ${slot.start}–${slot.end} (${selectedSubject})`
+          : `Записаться: ${slot.date} ${slot.start}–${slot.end} (${selectedSubject})`);
         tg.MainButton.show();
       }
     }
@@ -285,17 +281,16 @@
       try{
         let res;
         if (rescheduleFrom) {
-          res = await apiPost('reschedule', { initData: tg.initData, oldId: rescheduleFrom, newId: selected.id });
+          res = await apiPost('reschedule', { initData: tg.initData, oldId: rescheduleFrom, newId: selected.id, subject: selectedSubject });
         } else {
-          res = await apiPost('book', { initData: tg.initData, slotId: selected.id });
+          res = await apiPost('book', { initData: tg.initData, slotId: selected.id, subject: selectedSubject });
         }
         tg.MainButton.hideProgress();
         if (res.ok){
           tg.HapticFeedback.notificationOccurred('success');
           tg.showAlert(rescheduleFrom ? 'Перенос выполнен. Обновлённый .ics отправлен.' : 'Запись подтверждена. .ics отправлен.');
           rescheduleFrom = null; reschedInfo.style.display = 'none'; selected = null;
-          await loadSlots(dateEl.value);
-          switchTab('my');
+          await loadSlots(dateEl.value); switchTab('my');
         } else {
           tg.HapticFeedback.notificationOccurred('error');
           tg.showAlert('Ошибка: ' + (res.error||''));
@@ -354,6 +349,9 @@
       reschedInfo.textContent = `Переносим: ${fmtDate(b.date)} ${b.start}–${b.end}. Выберите новый свободный слот.`;
       switchTab('book');
       if (inTG) tg.MainButton.hide();
+      // авто‑подставим предмет из брони, если есть
+      const btn = [...document.querySelectorAll('.subj')].find(x => (x.dataset.value||'') === (b.subject||''));
+      if (btn){ document.querySelectorAll('.subj').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); selectedSubject = b.subject; }
     }
 
     function fmtDate(ymd){
@@ -361,7 +359,6 @@
       return new Date(Date.UTC(y,m-1,d,0,0,0)).toLocaleDateString('ru-RU',{ timeZone:'Europe/Moscow', day:'2-digit', month:'long' });
     }
 
-    // Первый запуск
     loadSlots(dateEl.value);
   </script>
 </body>
