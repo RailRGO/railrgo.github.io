@@ -99,7 +99,10 @@
     }
     .btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(99,102,241,.35)}
     .btn:disabled{opacity:.7; cursor:not-allowed}
-    .btn.ghost{ background:#fff; color:var(--text); border:1px solid var(--border); box-shadow:none } /* Белые кнопки */
+    /* Ghost: в тёмной теме — прозрачные (как раньше), в светлой — белые */
+    .btn.ghost{ background:transparent; color:var(--text); border:1px solid var(--border); box-shadow:none }
+    [data-theme="light"] .btn.ghost{ background:#fff; }
+
     .btn.tg{ background:#0088cc }
 
     .card{
@@ -151,11 +154,7 @@
     .formCard{ display:grid; grid-template-columns: 1fr 1.05fr; gap:24px; align-items:stretch }
     @media(max-width:900px){ .formCard{ grid-template-columns:1fr } }
 
-    .media{
-      min-height:460px;
-      background: none;
-      position:relative;
-    }
+    .media{ min-height:460px; background:none; position:relative; }
     .media img{ width:100%; height:100%; object-fit:contain; display:block; }
 
     .actions{ display:flex; align-items:center; justify-content:center; gap:16px; margin-top:6px }
@@ -180,16 +179,14 @@
     .confirm-note{ margin-top:10px; color:var(--muted) }
     .confirm-actions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap }
 
-    @media(max-width:820px){
-      .media{ display:none }
-    }
+    @media(max-width:820px){ .media{ display:none } }
 
     /* Красивое интро */
     .intro{
       max-width:760px;
       margin:0;
       color:var(--muted);
-      line-height:1.75;          /* увеличенный межстрочный */
+      line-height:1.75;
       font-size:16px;
     }
     .intro .intro-title{
@@ -221,7 +218,7 @@
 <section class="card">
   <h1>Онлайн‑уроки по математике и физике</h1>
   <p class="intro">
-    <span class="intro-title">Математика и физика — без «белых пятен»</span>
+    <span class="intro-title">Математика и физика — без пробелов</span>
     <span class="intro-text">Помогаю подтянуть оценки, разобраться в сложных темах и полюбить предметы.</span>
     <span class="intro-text">Индивидуальные занятия для 4 – 9 классов, урок — 50 минут.</span>
   </p>
@@ -271,7 +268,6 @@
         <div>
           <label for="time">Время слота (МСК)</label>
           <select id="time" name="time" required disabled></select>
-          <!-- подсказку убрали -->
         </div>
       </div>
 
@@ -313,7 +309,6 @@
 </footer>
 
 <script>
-  // Текущий Web App URL (оканчивается на /exec)
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbzvFzQ7HxODs0P3jwOc7_2e-O12mR9Bmz_aXy6JI6zNdYjuv95bVZT5ZuXEk5d4joiOWw/exec';
 
   // Тема
@@ -499,7 +494,8 @@
     };
 
     confirmCard.classList.remove('hidden');
-    showStatus('Бронирование создано.', 'success', { stickyMs: 15000 });
+    // Симпатичнее статус: галочка + краткие детали
+    showStatus(`✅ Готово! Бронирование создано • ${subject || 'Занятие'} • ${when} МСК`, 'success', { stickyMs: 15000 });
   }
 
   function showLoading(text){
