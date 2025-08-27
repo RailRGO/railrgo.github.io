@@ -14,7 +14,7 @@
       --bg:#0b1020; --text:#e5e7eb; --muted:#a8b3c2;
       --card:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.16);
       --accent:#6366f1; --accent-2:#8b5cf6; --accent-g:#16a085;
-      --chip:#121a2f; --chip-br:#2b3551; --chip-text:#0f172a; --chip-meta:#6b7280; /* текст внутри светлых карточек */
+      --chip:#121a2f; --chip-br:#2b3551; --chip-text:#0f172a; --chip-meta:#6b7280;
       --slot-bg:#ffffff; --slot-br:#e5e7eb; --slot-text:#0f172a; --slot-meta:#64748b;
       --shadow: 0 10px 26px rgba(0,0,0,.35);
       color-scheme: dark;
@@ -58,7 +58,6 @@
     input[type="date"]{ padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); outline:none }
     input[type="date"]:focus{ border-color:#7c83ff; box-shadow:0 0 0 6px rgba(99,102,241,.25) }
 
-    /* Предметы — прямоугольные чипы, как слоты */
     .subjects{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin: 14px 0 12px }
     .subj{
       padding:12px 14px; border-radius:16px; border:1px solid var(--chip-br);
@@ -72,28 +71,10 @@
       color:#fff; box-shadow: 0 10px 22px rgba(99,102,241,.35);
     }
 
-    /* Мои записи — всегда одна колонка вниз */
-    #secMy #myList{
-      display: flex;
-      flex-direction: column;
-      gap: 14px;          /* расстояние между карточками */
-    }
-    
-    /* Карточка записи на всю ширину контейнера */
-    #secMy #myList .item{
-      width: 100%;
-      box-sizing: border-box;
-    }
-    
-    /* Кнопки внутри карточки — в строку, не ломаемся */
-    #secMy #myList .actions{
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-    }
-        
-    /* Слоты — светлые карточки как на сайте */
+    #secMy #myList{ display:flex; flex-direction:column; gap:14px }
+    #secMy #myList .item{ width:100%; box-sizing:border-box }
+    #secMy #myList .actions{ display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-start }
+
     #slots{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px }
     .slot{
       display:flex; flex-direction:column; gap:6px; padding:16px;
@@ -113,7 +94,7 @@
     .item{ border:1px solid var(--border); border-radius:16px; padding:12px 14px; background:var(--card) }
     .actions{ display:flex; gap:12px; margin-top:12px; flex-wrap:wrap }
     .btn{ padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); font-weight:800; cursor:pointer }
-    .btn.destructive{ border:none; background: linear-gradient(135deg,#ef4444,#f97316); color:#fff } /* заметная «Отменить» */
+    .btn.destructive{ border:none; background: linear-gradient(135deg,#ef4444,#f97316); color:#fff }
 
     .info{ padding:10px 12px; border-left:3px solid var(--accent); background:rgba(99,102,241,.10); border-radius:10px; margin:12px 0 10px }
     .loading{ display:inline-flex; align-items:center; gap:10px; color:var(--muted) }
@@ -164,7 +145,7 @@
   </div>
 
   <script>
-    const API = 'https://script.google.com/macros/s/AKfycbw3oMYurc-lF3hhTuyx0UW0zfiNS2Iz5Ny2-MOaQbQfCmeiZiipPNq573J80ywqX1H4Xg/exec';
+    const API = 'https://script.google.com/macros/s/AKfycbx1UfWdGpZdDrQhNJLKORiKUfo6Qw9MaSKnHCaOhrmvLmMDhwLaAZg-b6TxTCeuK_p_5Q/exec';
     const BOT_USERNAME = 'TutorAVVbot';
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -362,11 +343,35 @@
       return new Date(Date.UTC(y,m-1,d,0,0,0)).toLocaleDateString('ru-RU',{ timeZone:'Europe/Moscow', day:'2-digit', month:'long' });
     }
 
+    // AUTO-BIND BY start_param (t.me/... ?startapp=bindt<token>)
+    (async function maybeBindByStartParam(){
+      if (!inTG || !tg || !tg.initDataUnsafe) return;
+      const sp = String(tg.initDataUnsafe.start_param || '');
+      if (!sp || !sp.startsWith('bindt')) return;
+
+      try{
+        const linkToken = sp.slice(5);
+        const res = await apiPost('bind', { initData: tg.initData, linkToken });
+        if (res.ok) {
+          if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          const when = res.startIso ? new Date(res.startIso) : null;
+          const whenLabel = when
+            ? when.toLocaleString('ru-RU', { timeZone:'Europe/Moscow', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) + ' МСК'
+            : '';
+          tg.showAlert('Запись привязана к вашему Telegram.' + (whenLabel ? '\n' + whenLabel + (res.subject ? ' • ' + res.subject : '') : ''));
+          switchTab('my');
+          loadMy();
+        } else {
+          if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+          tg.showAlert('Не удалось привязать запись: ' + (res.error || 'ошибка'));
+        }
+      } catch(e){
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+        tg.showAlert('Сеть/сервер недоступны.');
+      }
+    })();
+
     loadSlots(dateEl.value);
   </script>
 </body>
 </html>
-
-
-
-
