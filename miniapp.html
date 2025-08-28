@@ -114,6 +114,14 @@
       <button class="tab active" id="tabBook">Записаться</button>
       <button class="tab" id="tabMy">Мои записи</button>
     </div>
+    <div id="phoneBox" class="panel" style="display:none; margin-bottom:12px">
+      <div class="row">
+        <label for="phoneInput">Телефон для связи:</label>
+        <input id="phoneInput" type="tel" placeholder="+7 999 123‑45‑67" style="max-width:260px" />
+        <button id="phoneSave" class="btn">Сохранить</button>
+      </div>
+      <div class="muted">Нужен только для связи и напоминаний. Можно указать позже.</div>
+    </div>
 
     <div id="reschedInfo" class="info" style="display:none;"></div>
 
@@ -191,6 +199,8 @@
     let rescheduleFrom = null;
     let selectedSubject = 'Математика';
 
+    document.getElementById('phoneSave').onclick = savePhone;
+
     // Сокращённая дата
     function shortDmy(ymd){
       const s = String(ymd||'');
@@ -215,6 +225,37 @@
       const subAcc = toAccusativeSubj(subject);
       if (isReschedule) return `Перенести на: ${d} в ${t} ${subAcc}`;
       return `Записаться: ${d} в ${t} на ${subAcc}`;
+    }
+
+    function normalizePhoneE164Local(s){
+      s = String(s||'').trim();
+      let d = s.replace(/\D/g,'');
+      if (!d) return '';
+      if (d.length===11 && d.startsWith('8')) d = '7'+d.slice(1);
+      return '+'+d;
+    }
+    async function loadProfile(){
+      if (!inTG) return;
+      try{
+        const res = await apiPost('profile', { initData: tg.initData });
+        const box = document.getElementById('phoneBox');
+        if (res.ok && !res.phoneE164) box.style.display = '';
+        else box.style.display = 'none';
+      }catch(_){}
+    }
+    async function savePhone(){
+      const inp = document.getElementById('phoneInput');
+      const phone = normalizePhoneE164Local(inp.value);
+      if (!/^\+\d{10,15}$/.test(phone)){ tg.showAlert('Укажите телефон в формате +7…'); return; }
+      try{
+        const res = await apiPost('setPhone', { initData: tg.initData, phone });
+        if (res.ok){
+          if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+          document.getElementById('phoneBox').style.display = 'none';
+        } else {
+          tg.showAlert('Ошибка: ' + (res.error||''));
+        }
+      }catch(_){ tg.showAlert('Сеть/сервер недоступны.'); }
     }
 
     tabBook.onclick = () => switchTab('book');
@@ -395,10 +436,13 @@
       }
     })();
 
+    if (inTG) loadProfile();
+
     loadSlots(dateEl.value);
   </script>
 </body>
 </html>
+
 
 
 
