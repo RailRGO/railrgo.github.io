@@ -212,9 +212,9 @@
       return new Date(Date.UTC(y,m-1,d,0,0,0)).toLocaleDateString('ru-RU',{ timeZone:'Europe/Moscow', weekday:'long', day:'2-digit', month:'long' });
     }
     dateEl.value = mskTodayIso();
-    dateLabel.textContent = `Дата (МСК): ${ruDateLabel(dateEl.value)}`;
+    dateLabel.textContent = `Дата: ${ruDateLabel(dateEl.value)}`;
     dateEl.addEventListener('change', () => {
-      dateLabel.textContent = `Дата (МСК): ${ruDateLabel(dateEl.value)}`;
+      dateLabel.textContent = `Дата: ${ruDateLabel(dateEl.value)}`;
       loadSlots(dateEl.value);
     });
 
@@ -375,6 +375,7 @@
   </script>
 </body>
 </html>
+
 
 
 
