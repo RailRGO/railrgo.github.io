@@ -191,19 +191,30 @@
     let rescheduleFrom = null;
     let selectedSubject = 'Математика';
 
-    // Режим текста кнопки: 'compact' — коротко, 'simple' — одно слово
-    const BTN_TEXT_MODE = 'compact'; // или 'simple'
-  
+    // Сокращённая дата
     function shortDmy(ymd){
       const s = String(ymd||'');
       if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
       return `${s.slice(8,10)}.${s.slice(5,7)}`;
     }
+  
+    // Винительный падеж (нужен нижний регистр)
+    function toAccusativeSubj(subj){
+      const m = String(subj||'').trim().toLowerCase();
+      const map = {
+        'математика': 'математику',
+        'физика': 'физику'
+      };
+      return map[m] || m;
+    }
+  
+    // Итоговый текст для MainButton
     function makeBtnText(slot, subject, isReschedule){
-      if (BTN_TEXT_MODE === 'simple') return isReschedule ? 'Перенести' : 'Записаться';
       const d = shortDmy(slot.date);
-      const subj = subject ? ` на ${String(subject).toLowerCase()}` : '';
-      return (isReschedule ? 'Перенести:' : 'Записаться:') + ` ${d} в ${slot.start}${subj}`;
+      const t = slot.start;
+      const subAcc = toAccusativeSubj(subject);
+      if (isReschedule) return `Перенести на: ${d} в ${t} ${subAcc}`;
+      return `Записаться: ${d} в ${t} на ${subAcc}`;
     }
 
     tabBook.onclick = () => switchTab('book');
@@ -388,6 +399,7 @@
   </script>
 </body>
 </html>
+
 
 
 
