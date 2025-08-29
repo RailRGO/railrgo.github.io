@@ -547,6 +547,11 @@
             : '';
           tg.showAlert('Запись привязана к вашему Telegram.' + (whenLabel ? '\n' + whenLabel + (res.subject ? ' • ' + res.subject : '') : ''));
           switchTab('my'); loadMy();
+          try {
+            const prof = await apiPost('profile', { initData: tg.initData });
+            hasPhone = !!(prof.ok && prof.phoneE164);
+            setPhoneBadge();
+          } catch(_) {}
         } else {
           if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
           tg.showAlert('Не удалось привязать запись: ' + (res.error || 'ошибка'));
@@ -571,5 +576,6 @@
   </script>
 </body>
 </html>
+
 
 
