@@ -236,12 +236,15 @@
     }
     async function loadProfile(){
       if (!inTG) return;
+      const box = document.getElementById('phoneBox');
+      box.style.display = ''; // показываем по умолчанию внутри Telegram
       try{
         const res = await apiPost('profile', { initData: tg.initData });
-        const box = document.getElementById('phoneBox');
-        if (res.ok && !res.phoneE164) box.style.display = '';
-        else box.style.display = 'none';
-      }catch(_){}
+        if (res.ok && res.phoneE164) box.style.display = 'none'; // уже есть телефон — спрячем
+        // если res.ok=false или исключение — оставим форму видимой
+      }catch(_){
+        // оставляем форму видимой, чтобы пользователь мог заполнить
+      }
     }
     async function savePhone(){
       const inp = document.getElementById('phoneInput');
@@ -442,6 +445,7 @@
   </script>
 </body>
 </html>
+
 
 
 
