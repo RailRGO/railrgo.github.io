@@ -120,19 +120,54 @@
     .fallback{ position:fixed; left:12px; right:12px; bottom:12px; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; display:none }
     .fallback a{ font-weight:800; color:#b9c2ff; text-decoration:none; display:inline-block; margin-top:6px }
 
-    /* PHONE UI — модалка */
-    .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:20; }
+        /* PHONE UI — модалка */
+    /* Заменить стили модалки и поля телефона */
+    
+    /* новые переменные для модалки/поля */
+    :root{
+      --modal-bg:#0f172a;       /* плотный фон модального окна в тёмной теме */
+      --field-bg:#111827;       /* плотный фон поля ввода в тёмной теме */
+    }
+    [data-theme="light"]{
+      --modal-bg:#ffffff;       /* плотный фон модального окна в светлой теме */
+      --field-bg:#f1f5f9;       /* плотный фон поля ввода в светлой теме */
+    }
+    
+    /* затемнение подложки модалки */
+    .modal{
+      display:none; position:fixed; inset:0;
+      background: rgba(0,0,0,0.55);  /* темнее и без прозрачности у карточки */
+      z-index: 2000;
+    }
     .modal.show{ display:block }
+    
+    /* само окно — ПЛОТНОЕ */
     .modal-card{
+      blur: backdrop-filter: blur(2px);
       width:min(560px, calc(100% - 24px));
       margin: 10vh auto 0 auto;
-      border-radius:18px; border:1px solid var(--border); box-shadow: var(--shadow);
-      background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(16,185,129,.08));
+      border-radius:18px; border:1px solid var(--border);
+      box-shadow: var(--shadow);
+      background: var(--modal-bg);   /* вместо полупрозрачного градиента */
       padding:16px;
     }
+    
+    /* заголовок и кнопки остаются как были */
     .modal-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px }
     .modal-title{ font-weight:800 }
-    .ghost{ background:transparent; border:1px solid var(--border) }
+    
+    /* поле телефона — ПЛОТНОЕ, без прозрачности */
+    #phoneInput{
+      flex:1; min-width:180px;
+      padding:10px 12px; border-radius:12px;
+      border:1px solid var(--border);
+      background: var(--field-bg);
+      color: var(--text);
+      outline:none;
+      appearance:none; -webkit-appearance:none;
+    }
+    #phoneInput::placeholder{ color: var(--muted); opacity:.9 }
+    #phoneInput:focus{ border-color:#7c83ff; box-shadow:0 0 0 6px rgba(99,102,241,.25) }
 
     /* Toast */
     .toast{
@@ -536,4 +571,5 @@
   </script>
 </body>
 </html>
+
 
