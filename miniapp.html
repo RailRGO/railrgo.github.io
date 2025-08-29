@@ -45,9 +45,23 @@
     h2{ margin:0 0 8px; font-weight:800; letter-spacing:.2px }
     .muted{ color:var(--muted); font-size:13px }
 
-    .tabs{ display:flex; gap:12px; margin:14px 0 16px }
+    /* Шапка вкладок + иконка телефона */
+    .tabs{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:14px 0 16px }
+    .tabs-left{ display:flex; gap:12px }
     .tab{ padding:10px 14px; border:1px solid var(--border); border-radius:14px; background:var(--card); color:var(--text); font-weight:800; cursor:pointer }
     .tab.active{ outline:2px solid var(--accent) }
+
+    /* PHONE UI — кнопка-иконка */
+    .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px; height:40px; border-radius:12px; border:1px solid var(--border);
+      background:var(--card); color:var(--text); cursor:pointer; position:relative;
+    }
+    .icon-btn svg{ width:18px; height:18px }
+    .icon-btn.need::after{
+      content:""; position:absolute; right:-4px; top:-4px; width:8px; height:8px; border-radius:50%;
+      background:#ef4444;
+    }
 
     .panel{
       background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(16,185,129,.08));
@@ -55,8 +69,10 @@
     }
     .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin: 2px 0 10px }
     label{ font-size:14px; font-weight:800 }
-    input[type="date"]{ padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); outline:none }
-    input[type="date"]:focus{ border-color:#7c83ff; box-shadow:0 0 0 6px rgba(99,102,241,.25) }
+    input[type="date"], input[type="tel"]{
+      padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--text); outline:none
+    }
+    input[type="date"]:focus, input[type="tel"]:focus{ border-color:#7c83ff; box-shadow:0 0 0 6px rgba(99,102,241,.25) }
 
     .subjects{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin: 14px 0 12px }
     .subj{
@@ -103,6 +119,32 @@
 
     .fallback{ position:fixed; left:12px; right:12px; bottom:12px; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; display:none }
     .fallback a{ font-weight:800; color:#b9c2ff; text-decoration:none; display:inline-block; margin-top:6px }
+
+    /* PHONE UI — модалка */
+    .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:20; }
+    .modal.show{ display:block }
+    .modal-card{
+      width:min(560px, calc(100% - 24px));
+      margin: 10vh auto 0 auto;
+      border-radius:18px; border:1px solid var(--border); box-shadow: var(--shadow);
+      background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(16,185,129,.08));
+      padding:16px;
+    }
+    .modal-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px }
+    .modal-title{ font-weight:800 }
+    .ghost{ background:transparent; border:1px solid var(--border) }
+
+    /* Toast */
+    .toast{
+      position: fixed; left:50%; bottom:16px; transform:translateX(-50%);
+      z-index: 30; display:none;
+      padding:10px 12px; border-radius:12px; border:1px solid var(--border);
+      box-shadow: var(--shadow); font-weight:800; letter-spacing:.2px;
+    }
+    .toast.success{ background:#064e3b; color:#d1fae5 }
+    .toast.error{   background:#7f1d1d; color:#fee2e2 }
+    [data-theme="light"] .toast.success{ background:#ecfdf5; color:#065f46 }
+    [data-theme="light"] .toast.error{   background:#fee2e2; color:#991b1b }
   </style>
 </head>
 <body>
@@ -111,16 +153,16 @@
     <div class="muted" id="userNote">Откройте в Telegram, чтобы авторизоваться</div>
 
     <div class="tabs">
-      <button class="tab active" id="tabBook">Записаться</button>
-      <button class="tab" id="tabMy">Мои записи</button>
-    </div>
-    <div id="phoneBox" class="panel" style="margin-bottom:12px">
-      <div class="row">
-        <label for="phoneInput">Телефон для связи:</label>
-        <input id="phoneInput" type="tel" placeholder="+7 999 123‑45‑67" style="max-width:260px" />
-        <button id="phoneSave" class="btn">Сохранить</button>
+      <div class="tabs-left">
+        <button class="tab active" id="tabBook">Записаться</button>
+        <button class="tab" id="tabMy">Мои записи</button>
       </div>
-      <div class="muted">Нужен только для связи и напоминаний. Можно указать позже.</div>
+      <!-- PHONE UI — кнопка в шапке -->
+      <button class="icon-btn" id="btnPhone" title="Телефон для связи" aria-label="Телефон для связи">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.08 4.18 2 2 0 0 1 4.09 2h3a2 2 0 0 1 2 1.72c.12.9.35 1.78.69 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.24a2 2 0 0 1 2.11-.45c.83.34 1.71.57 2.61.69A2 2 0 0 1 22 16.92z"/>
+        </svg>
+      </button>
     </div>
 
     <div id="reschedInfo" class="info" style="display:none;"></div>
@@ -152,9 +194,29 @@
     <a id="fallbackLink" href="#" target="_blank" rel="noopener">Открыть в боте</a>
   </div>
 
+  <!-- PHONE UI — модальное окно -->
+  <div id="phoneModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">Телефон для связи</div>
+        <button id="phoneClose" class="btn ghost">Закрыть</button>
+      </div>
+      <div class="row">
+        <input id="phoneInput" type="tel" placeholder="+7 999 123‑45‑67" style="flex:1; min-width:180px">
+        <button id="phoneSave" class="btn">Сохранить</button>
+      </div>
+      <div class="muted">Нужен только для связи и напоминаний. Можно указать позже.</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
   <script>
-    const API = 'https://script.google.com/macros/s/AKfycbwc6YZCj7NhtVwvWJJ15m4SsSud-4lZgdDtveu7296laEsKigGB2GqkuMH_LrfeQPi82g/exec';
+    // Настройки
+    const API = 'https://script.google.com/macros/s/AKfycbx7qRWAP1zARUxp-D4_xT72Aym7y7ll1W9hepEL0I4U5DvTali1mjrk8sV6DknLNHEdIA/exec';
     const BOT_USERNAME = 'TutorAVVbot';
+    const PHONE_FEEDBACK = 'toast'; // 'toast' | 'alert'
 
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     const inTG = !!(tg && tg.initData);
@@ -174,6 +236,7 @@
     const fallbackLink = document.getElementById('fallbackLink');
     if (!inTG) { fallbackBox.style.display = 'block'; fallbackLink.href = `https://t.me/${BOT_USERNAME}?startapp=open`; }
 
+    // Элементы
     const userNote = document.getElementById('userNote');
     const tabBook = document.getElementById('tabBook');
     const tabMy = document.getElementById('tabMy');
@@ -188,6 +251,14 @@
     const slotsStatus = document.getElementById('slotsStatus');
     const myList = document.getElementById('myList');
 
+    // PHONE UI elements
+    const btnPhone   = document.getElementById('btnPhone');
+    const phoneModal = document.getElementById('phoneModal');
+    const phoneClose = document.getElementById('phoneClose');
+    const phoneInput = document.getElementById('phoneInput');
+    const phoneSave  = document.getElementById('phoneSave');
+
+    // User
     let user = null;
     if (inTG && tg.initDataUnsafe && tg.initDataUnsafe.user) {
       user = tg.initDataUnsafe.user;
@@ -195,38 +266,23 @@
       userNote.textContent = `${name}${user.username ? ' @'+user.username : ''} • MSK`;
     }
 
+    // State
     let selected = null;
     let rescheduleFrom = null;
     let selectedSubject = 'Математика';
+    let hasPhone = false;
 
-    document.getElementById('phoneSave').onclick = savePhone;
-
-    // Сокращённая дата
-    function shortDmy(ymd){
-      const s = String(ymd||'');
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-      return `${s.slice(8,10)}.${s.slice(5,7)}`;
+    // Utils: API
+    async function apiGetSlots(dateISO){
+      const r = await fetch(`${API}?action=slots&date=${encodeURIComponent(dateISO)}`);
+      return r.json();
     }
-  
-    // Винительный падеж (нужен нижний регистр)
-    function toAccusativeSubj(subj){
-      const m = String(subj||'').trim().toLowerCase();
-      const map = {
-        'математика': 'математику',
-        'физика': 'физику'
-      };
-      return map[m] || m;
-    }
-  
-    // Итоговый текст для MainButton
-    function makeBtnText(slot, subject, isReschedule){
-      const d = shortDmy(slot.date);
-      const t = slot.start;
-      const subAcc = toAccusativeSubj(subject);
-      if (isReschedule) return `Перенести на: ${d} в ${t} ${subAcc}`;
-      return `Записаться: ${d} в ${t} на ${subAcc}`;
+    async function apiPost(action, obj){
+      const r = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action, ...obj }) });
+      return r.json();
     }
 
+    // PHONE helpers
     function normalizePhoneE164Local(s){
       s = String(s||'').trim();
       let d = s.replace(/\D/g,'');
@@ -234,33 +290,59 @@
       if (d.length===11 && d.startsWith('8')) d = '7'+d.slice(1);
       return '+'+d;
     }
-    async function loadProfile(){
+    function showToast(msg, type){
+      const el = document.getElementById('toast');
+      el.textContent = String(msg||'');
+      el.className = 'toast '+(type||'success');
+      el.style.display = 'block';
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=>{ el.style.display = 'none'; }, 2800);
+    }
+    function setPhoneBadge(){
+      if (!inTG) { btnPhone.style.display='none'; return; }
+      btnPhone.style.display='';
+      btnPhone.classList.toggle('need', !hasPhone);
+    }
+    async function openPhoneModal(){
       if (!inTG) return;
-      const box = document.getElementById('phoneBox');
-      box.style.display = ''; // показываем по умолчанию внутри Telegram
       try{
         const res = await apiPost('profile', { initData: tg.initData });
-        if (res.ok && res.phoneE164) box.style.display = 'none'; // уже есть телефон — спрячем
-        // если res.ok=false или исключение — оставим форму видимой
-      }catch(_){
-        // оставляем форму видимой, чтобы пользователь мог заполнить
-      }
+        if (res.ok) {
+          hasPhone = !!res.phoneE164;
+          if (res.phoneE164) phoneInput.value = res.phoneE164;
+        }
+      }catch(_){}
+      phoneModal.classList.add('show');
     }
+    function closePhoneModal(){ phoneModal.classList.remove('show'); }
     async function savePhone(){
-      const inp = document.getElementById('phoneInput');
-      const phone = normalizePhoneE164Local(inp.value);
+      const phone = normalizePhoneE164Local(phoneInput.value);
       if (!/^\+\d{10,15}$/.test(phone)){ tg.showAlert('Укажите телефон в формате +7…'); return; }
       try{
         const res = await apiPost('setPhone', { initData: tg.initData, phone });
         if (res.ok){
           if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-          document.getElementById('phoneBox').style.display = 'none';
+          hasPhone = true; setPhoneBadge(); closePhoneModal();
+          if (PHONE_FEEDBACK==='alert') tg.showAlert('Телефон сохранён: '+phone);
+          else showToast('Телефон сохранён', 'success');
         } else {
-          tg.showAlert('Ошибка: ' + (res.error||''));
+          if (PHONE_FEEDBACK==='alert') tg.showAlert('Ошибка: '+(res.error||'UNKNOWN'));
+          else showToast('Ошибка: '+(res.error||'UNKNOWN'), 'error');
         }
-      }catch(_){ tg.showAlert('Сеть/сервер недоступны.'); }
+      }catch(_){
+        if (PHONE_FEEDBACK==='alert') tg.showAlert('Сеть/сервер недоступны.');
+        else showToast('Сеть/сервер недоступны', 'error');
+      }
     }
 
+    // Events (phone UI)
+    btnPhone.onclick = openPhoneModal;
+    phoneClose.onclick = closePhoneModal;
+    phoneModal.addEventListener('click', (e)=>{ if (e.target===phoneModal) closePhoneModal(); });
+    phoneSave.onclick = savePhone;
+    window.addEventListener('keydown', (e)=>{ if (e.key==='Escape') closePhoneModal(); });
+
+    // Tabs
     tabBook.onclick = () => switchTab('book');
     tabMy.onclick   = () => switchTab('my');
     function switchTab(which){
@@ -274,6 +356,7 @@
     const urlParams = new URLSearchParams(location.search);
     if (urlParams.get('tab') === 'my') switchTab('my');
 
+    // Date init
     function mskTodayIso(){
       return new Intl.DateTimeFormat('en-CA', { timeZone:'Europe/Moscow', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
     }
@@ -288,6 +371,7 @@
       loadSlots(dateEl.value);
     });
 
+    // Subjects
     subjectsEl.addEventListener('click', (e) => {
       const btn = e.target.closest('.subj'); if (!btn) return;
       document.querySelectorAll('.subj').forEach(x => x.classList.remove('active'));
@@ -296,15 +380,7 @@
       if (selected) selectSlot(document.querySelector('.slot.selected'), selected);
     });
 
-    async function apiGetSlots(dateISO){
-      const r = await fetch(`${API}?action=slots&date=${encodeURIComponent(dateISO)}`);
-      return r.json();
-    }
-    async function apiPost(action, obj){
-      const r = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action, ...obj }) });
-      return r.json();
-    }
-
+    // Slots
     async function loadSlots(dateISO){
       slots.innerHTML = '';
       slotsStatus.style.display = '';
@@ -327,6 +403,14 @@
       } catch(e){
         slotsStatus.innerHTML = `<span class="muted">Не удалось загрузить слоты</span>`;
       }
+    }
+
+    // MainButton — короткие подписи
+    function shortDmy(ymd){ const s=String(ymd||''); return /^\d{4}-\d{2}-\d{2}$/.test(s) ? `${s.slice(8,10)}.${s.slice(5,7)}` : s; }
+    function toAccusativeSubj(subj){ const m=String(subj||'').trim().toLowerCase(); const map={'математика':'математику','физика':'физику'}; return map[m]||m; }
+    function makeBtnText(slot, subject, isReschedule){
+      const d = shortDmy(slot.date); const t = slot.start; const subAcc = toAccusativeSubj(subject);
+      return isReschedule ? `Перенести на: ${d} в ${t} ${subAcc}` : `Записаться: ${d} в ${t} на ${subAcc}`;
     }
 
     function selectSlot(el, slot){
@@ -362,6 +446,7 @@
       }
     });
 
+    // My bookings
     async function loadMy(){
       myList.innerHTML = `<div class="loading"><span class="spinner"></span><span>Загружаем…</span></div>`;
       if (!inTG){ myList.innerHTML = `<div class="muted">Откройте из Telegram</div>`; return; }
@@ -411,12 +496,11 @@
       return new Date(Date.UTC(y,m-1,d,0,0,0)).toLocaleDateString('ru-RU',{ timeZone:'Europe/Moscow', day:'2-digit', month:'long' });
     }
 
-    // AUTO-BIND BY start_param (t.me/... ?startapp=bindt<token>)
+    // AUTO-BIND BY start_param
     (async function maybeBindByStartParam(){
       if (!inTG || !tg || !tg.initDataUnsafe) return;
       const sp = String(tg.initDataUnsafe.start_param || '');
       if (!sp || !sp.startsWith('bindt')) return;
-
       try{
         const linkToken = sp.slice(5);
         const res = await apiPost('bind', { initData: tg.initData, linkToken });
@@ -427,8 +511,7 @@
             ? when.toLocaleString('ru-RU', { timeZone:'Europe/Moscow', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) + ' МСК'
             : '';
           tg.showAlert('Запись привязана к вашему Telegram.' + (whenLabel ? '\n' + whenLabel + (res.subject ? ' • ' + res.subject : '') : ''));
-          switchTab('my');
-          loadMy();
+          switchTab('my'); loadMy();
         } else {
           if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
           tg.showAlert('Не удалось привязать запись: ' + (res.error || 'ошибка'));
@@ -439,22 +522,17 @@
       }
     })();
 
-    if (inTG) loadProfile();
+    // Инициализация бейджа телефона
+    if (inTG) (async () => {
+      try{
+        const res = await apiPost('profile', { initData: tg.initData });
+        hasPhone = !!(res.ok && res.phoneE164);
+      }catch(_){}
+      setPhoneBadge();
+    })();
 
+    // First load
     loadSlots(dateEl.value);
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
